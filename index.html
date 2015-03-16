@@ -1,7 +1,28 @@
 <!DOCTYPE html>
 <html>
+
+<head>
+    <title>Infovis LVM</title>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+</head>
+
 <body>
 	<h1>Hello World</h1>
 	<p>I'm hosted with GitHub Pages.</p>
+	
+	<script>
+		
+		function sheetLoaded(data) {
+			d3.select("body")
+				.append("p")
+				.text("Data loaded");
+		}
+		
+	</script>
+	
+	<script src="<script src="https://spreadsheets.google.com/feeds/cells/1zWCinNSlwG20xruZKnwv2SFrJ-IA_DWWUcJIHwlZOnU/od6/public/values?alt=json-in-script&callback=sheetLoaded"></script>
+	
+	
+"/>
 </body>
 </html>
