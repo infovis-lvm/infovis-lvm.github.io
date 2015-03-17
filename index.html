@@ -1,16 +1,25 @@
-<!doctype html>
-
 <html>
 
 <head>
     <title>Infovis LVM</title>
     <script src="http://d3js.org/d3.v3.min.js"></script>
+
+    <link rel="stylesheet" href="style.css" />
+    <style type="text/css">
+        body {
+            font-family: verdana, sans-serif;
+        }
+    </style>
 </head>
 
 <body>
-	<h1>Hello World</h1>
-	<p>I'm hosted with GitHub Pages.</p>
-	
+	<h1>LVM</h1>
+	<p>First prototype.</p>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="test.js"></script>
+
+
 	<script>
 	/**
 	* Maps the spreadsheet cells into a dataframe, consisting of an array of rows (i.e. a 2d array)
@@ -48,10 +57,19 @@
 			
 			console.log(entries);
 		}
-		
+
+
 	</script>
-	
+    <div id="vis">
+        <div id="test"></div>
+    </div>
+    <div id="clone">
+        <span class="title"></span>
+        <div class ="names"> </div>
+        <div class="view"></div>
+    </div>
+
 	<script src="https://spreadsheets.google.com/feeds/cells/1zWCinNSlwG20xruZKnwv2SFrJ-IA_DWWUcJIHwlZOnU/od6/public/values?alt=json-in-script&callback=sheetLoaded"></script>
-	
+
 </body>
 </html>
