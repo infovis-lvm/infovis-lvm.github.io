@@ -2,6 +2,22 @@
     background-color: white;
 }
 
+text.label {
+    color : red;
+}
+
+#First_War_Test > div.view > svg > g > g:nth-child(5) > text
+
+
+body {
+    font-family: verdana, sans-serif;
+}
+
+.title {
+    text-anchor : middle;
+    color : red;
+}
+
 .chart rect {
     stroke: white;
     fill: steelblue;
@@ -22,3 +38,4 @@
 .axis text {
     font-size: 12px;
 }
+

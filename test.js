@@ -12,6 +12,7 @@ $( function() {
 
     //var url = './sugars.csv';
     var start = '1860';
+    var ed = "2010"
     var first = d3.time.day.round(d3.time.year.offset(new Date(start), -1)),
         last  =  d3.time.day.round(d3.time.year.offset(new Date(start), 1));
 
@@ -20,7 +21,7 @@ $( function() {
         width: width, margin: 0, height: 400 };
     opts.xScale = d3.time.scale()
         .domain( [first, last] )
-        .range(  [0, (10) ] )
+        .range(  [0, 10 ] )
     ;
     opts.tick_step =  24;
     opts.ticks = d3.time.years;
@@ -36,7 +37,7 @@ function draw_graph(name, data, our) {
         dots,
         margin = our.margin || 100,
         w = 8,
-        h = 200,
+        h = our.height,
         x, y,
         width = our.width || $('#vis').width( ),
         xAxis, yAxis,
@@ -46,6 +47,7 @@ function draw_graph(name, data, our) {
     var scaleExtent = [ 0, 200 ];
 
     var color = d3.scale.category10();
+
 
 
     var zScale = d3.scale.linear( ).domain(scaleExtent).rangeRound( [0, 1000] );
@@ -62,29 +64,32 @@ function draw_graph(name, data, our) {
     chart = d3.select(selector).append( 'svg' )
         .attr( 'class', 'chart' )
         .attr( 'width', width )
-        .attr( 'height', h )
+        .attr( 'height', h+150 )
         .append('g');
 
     d3.select(selector + ' svg g')
         .attr('transform', 'translate(50, 50)');
 
+
+
     var first = our.range ? our.range[0] : d3.time.day.round(d3.time.day.offset(new Date( ), -1)),
         last  = our.range ? our.range[our.range.length - 1] : d3.time.day.round(d3.time.day.offset(new Date( ), 1))
         ;
 
-    console.log(my);
-
+    console.log(first);
 
     x = our.xScale.copy( );
 
     if (x.range()[1] < width) {
         last = x.invert(width);
-        x = x.copy( ).domain( [first, last] )
+        x = x.copy( ).domain([first, last])
             .range( [0, width ] );
     }
     y = d3.scale.linear()
         .domain( [0, d3.max( data, function( d ) { return d.intentsity; } )] )
         .rangeRound( [0, h - margin] );
+
+
 
     var safeties = {
         low: 70,
@@ -138,7 +143,24 @@ function draw_graph(name, data, our) {
         .scale(x)
         .tickSize(12, 1, 1)
     ;
-    console.log(xAxis);
+
+    var xlabel = chart.append('g');
+
+
+    var ylabel = chart.append('g');
+
+
+    ylabel.append("text")
+        .attr('class' ,'label')
+        .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+        .attr("transform", "translate("+ (0) +","+(-20)+")")  // text is drawn off the screen top left, move down and out and rotate
+        .text("Intensity");
+
+    xlabel.append("text")
+        .attr('class' ,'label')
+        .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
+        .attr("transform", "translate("+ (width/2) +","+(h-(100/3))+")")  // centre below axis
+        .text("Date");
 
 
     yAxis = d3.svg.axis()
@@ -190,6 +212,8 @@ function draw_graph(name, data, our) {
             .attr('font-size', function(d,i) {
                 return x( d.enddate  - 1 -d.startdate  +1)/100 + "px" ;
             });
+
+
 
     }
 
