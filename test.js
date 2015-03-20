@@ -21,7 +21,7 @@ $( function() {
         width: width, margin: 0, height: 400 };
     opts.xScale = d3.time.scale()
         .domain( [first, last] )
-        .range(  [0, 10 ] )
+        .range(  [0, 13 ] )
     ;
     opts.tick_step =  24;
     opts.ticks = d3.time.years;
@@ -44,7 +44,7 @@ function draw_graph(name, data, our) {
         zoom = 40,
         selector = '#' + name;
     ;
-    var scaleExtent = [ 0, 200 ];
+    var scaleExtent = [ 1, 200 ];
 
     var color = d3.scale.category10();
 
