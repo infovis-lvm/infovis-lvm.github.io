@@ -44,7 +44,7 @@ function sheetLoaded(data) {
 
 function fix_row(row, i) {
     row.beginning = d3.time.format.iso.parse(row.beginning);
-    row.end = d3.time.format.iso.parse(row.end);
+    row.ending = d3.time.format.iso.parse(row.ending);
     row.sterfkans_per_dag = parseInt(row.sterfkans_per_dag);
     row.name = String(row.name);
 }
@@ -245,12 +245,10 @@ function draw_graph(name, data, our) {
 
 
 
-
-
     function render() {
         dots.selectAll("line")
             .attr( 'x1', function( d, i ) { return x(d.beginning ) - 1; } )
-            .attr( 'x2', function( d, i ) { return x( d.end ) - 1; } )
+            .attr( 'x2', function( d, i ) { return x( d.ending ) - 1; } )
             .attr( 'y1', function( d ) { return (h - margin) - y( d.sterfkans_per_dag ) + 1 } )
             .attr( 'y2', function( d ) { return (h - margin) - y( d.sterfkans_per_dag ) + 1 } )
         ;
@@ -261,7 +259,7 @@ function draw_graph(name, data, our) {
         names.selectAll("text")
             .text(function(d) {return d.name;})
             .attr('x', function(d,i) {
-                return  x( new Date(d.end - (d.end.getTime()-1 - d.beginning.getTime()-1)/2) );
+                return  x( new Date(d.ending.getTime() - (d.ending.getTime()-1 - d.beginning.getTime()-1)/2) );
             })
             .attr('y', function(d,i) {
                 return ((h - margin) - y( d.sterfkans_per_dag ) + 1);
@@ -270,8 +268,8 @@ function draw_graph(name, data, our) {
                 return color(i);
             })
             .attr('font-size', function(d,i) {
-                return x( d.end  - 1 - d.beginning  +1)/130 + "px" ;
-                //return 10*(x(d.end - d.beginning)/x( d.end  - 1 - d.beginning  +1)) + "px" ;
+                return x( d.ending  - 1 - d.beginning  +1)/130 + "px" ;
+                //return 10*(x(d.ending - d.beginning)/x( d.ending  - 1 - d.beginning  +1)) + "px" ;
             });
 
 
