@@ -1,22 +1,79 @@
+var wardata;
+var wardatalen;
+
+function mapEntries(json, realrowlength, skip){
+    if (!skip) skip = 0;
+    var dataframe = new Array();
+    var row = new Array();
+    for (var i=0; i < json.feed.entry.length; i++) {
+        var entry = json.feed.entry[i];
+        if (entry.gs$cell.col == '1') {
+            if (row != null) {
+                if ((!realrowlength || row.length === realrowlength) && (skip === 0)){
+                    dataframe.push(row);
+                } else {
+                    if (skip > 0) skip--;
+                }
+            }
+            var row = new Array();
+        }
+        row.push(entry.content.$t);
+    }
+    dataframe.push(row);
+    return dataframe;
+}
+
+function sheetLoaded(data) {
+    console.log("laod data")
+    var temp = mapEntries(data);
+    wardatalen = temp[1].length;
+
+    wardata = temp.map(function(d,i) {
+        var obj = new Object;
+        //first 2 rows of spreadsheet are irrelevant
+        if ( i > 1) {
+            for(var j = 0 ; j < wardatalen+1; j++) {
+                obj[temp[1][j]] = temp[i][j];
+            }
+            return obj;
+        }
+
+    });
+    wardata = wardata.filter(Boolean);
+}
+
+function fix_row(row, i) {
+    row.beginning = d3.time.format.iso.parse(row.beginning);
+    row.end = d3.time.format.iso.parse(row.end);
+    row.sterfkans_per_dag = parseInt(row.sterfkans_per_dag);
+    row.name = String(row.name);
+}
+
+function logrow(d) {
+    console.log(d.sterfkans_per_dag);
+}
+
 $( function() {
 
     var csv_text = 'startdate,enddate,intentsity,warname,\n\
 1939-09-01,1945-09-02,2,WW2\n\
 1914-07-28,1918-11-11,20,Mega lange oorlog\n\
 ';
-    var json = [ ];
+
+
+    var json = wardata;
+
     var width = $('#vis').width( ) - 10;
 
-    json = d3.csv.parse(csv_text);
+    console.log(wardata);
+
     json.forEach(fix_row);
 
-    //var url = './sugars.csv';
     var start = '1860';
     var ed = "2010"
     var first = d3.time.day.round(d3.time.year.offset(new Date(start), -1)),
         last  =  d3.time.day.round(d3.time.year.offset(new Date(start), 1));
 
-    console.log('first', first, 'last', last);
     var opts = { range: d3.time.month.range(first, last),
         width: width, margin: 0, height: 400 };
     opts.xScale = d3.time.scale()
@@ -30,6 +87,7 @@ $( function() {
 } );
 
 var my = { };
+
 
 function draw_graph(name, data, our) {
     var results,
@@ -48,12 +106,14 @@ function draw_graph(name, data, our) {
 
     var color = d3.scale.category10();
 
+    console.log(data);
+
+    data.forEach(logrow);
 
 
     var zScale = d3.scale.linear( ).domain(scaleExtent).rangeRound( [0, 1000] );
     var zSwitching = d3.scale.linear( ).domain([0,1000]).rangeRound([0,8]);
 
-    console.log($('#vis'), $('#vis').width( ), name);
     $('#vis #test').remove( );
     $('#vis').append( $('#clone').clone(true).attr('id', name) );
     $(selector).find('.title').text(name.replace(/_/g," "));
@@ -76,7 +136,7 @@ function draw_graph(name, data, our) {
         last  = our.range ? our.range[our.range.length - 1] : d3.time.day.round(d3.time.day.offset(new Date( ), 1))
         ;
 
-    console.log(first);
+
 
     x = our.xScale.copy( );
 
@@ -86,7 +146,7 @@ function draw_graph(name, data, our) {
             .range( [0, width ] );
     }
     y = d3.scale.linear()
-        .domain( [0, d3.max( data, function( d ) { return d.intentsity; } )] )
+        .domain( [0, d3.max( data, function( d ) { return d.sterfkans_per_dag; } )] )
         .rangeRound( [0, h - margin] );
 
 
@@ -154,7 +214,7 @@ function draw_graph(name, data, our) {
         .attr('class' ,'label')
         .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
         .attr("transform", "translate("+ (0) +","+(-20)+")")  // text is drawn off the screen top left, move down and out and rotate
-        .text("Intensity");
+        .text("sterfkans per dag");
 
     xlabel.append("text")
         .attr('class' ,'label')
@@ -164,7 +224,7 @@ function draw_graph(name, data, our) {
 
 
     yAxis = d3.svg.axis()
-        .scale(d3.scale.linear().domain( [0, d3.max( data, function( d ) { return d.intentsity || 0; } )] ).rangeRound( [h - margin, 0] ))
+        .scale(d3.scale.linear().domain( [0, d3.max( data, function( d ) { return d.sterfkans_per_dag || 0; } )] ).rangeRound( [h - margin, 0] ))
         .ticks(7)
         .tickSize(6, 3, 1)
         .orient('left');
@@ -189,28 +249,29 @@ function draw_graph(name, data, our) {
 
     function render() {
         dots.selectAll("line")
-            .attr( 'x1', function( d, i ) { return x( d.startdate ) - 1; } )
-            .attr( 'x2', function( d, i ) { return x( d.enddate ) - 1; } )
-            .attr( 'y1', function( d ) { return (h - margin) - y( d.intentsity ) + 1 } )
-            .attr( 'y2', function( d ) { return (h - margin) - y( d.intentsity ) + 1 } )
+            .attr( 'x1', function( d, i ) { return x(d.beginning ) - 1; } )
+            .attr( 'x2', function( d, i ) { return x( d.end ) - 1; } )
+            .attr( 'y1', function( d ) { return (h - margin) - y( d.sterfkans_per_dag ) + 1 } )
+            .attr( 'y2', function( d ) { return (h - margin) - y( d.sterfkans_per_dag ) + 1 } )
         ;
         xAxis.scale(x);
         chart.select(".x.axis").call(xAxis);
         chart.select(".y.axis").call(yAxis);
 
         names.selectAll("text")
-            .text(function(d) {return d.warname;})
+            .text(function(d) {return d.name;})
             .attr('x', function(d,i) {
-                return  x( new Date(d.enddate - (d.enddate.getTime()-1 - d.startdate.getTime()-1)/2) );
+                return  x( new Date(d.end - (d.end.getTime()-1 - d.beginning.getTime()-1)/2) );
             })
             .attr('y', function(d,i) {
-                return ((h - margin) - y( d.intentsity ) + 1);
+                return ((h - margin) - y( d.sterfkans_per_dag ) + 1);
             })
             .attr('fill', function (d, i) {
                 return color(i);
             })
             .attr('font-size', function(d,i) {
-                return x( d.enddate  - 1 -d.startdate  +1)/100 + "px" ;
+                //return x( d.end  - 1 - d.beginning  +1)/200 + "px" ;
+                return 20*(x(d.end - d.beginning)/x( d.end  - 1 - d.beginning  +1)) + "px" ;
             });
 
 
@@ -230,10 +291,3 @@ function update_data(rows)  {
     }
 }
 
-function fix_row(row, i) {
-    row.startdate = d3.time.format.iso.parse(row.startdate);
-    row.enddate = d3.time.format.iso.parse(row.enddate);
-    row.intentsity = parseInt(row.intentsity);
-    row.warname = String(row.warname);
-
-}
