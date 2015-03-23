@@ -270,8 +270,8 @@ function draw_graph(name, data, our) {
                 return color(i);
             })
             .attr('font-size', function(d,i) {
-                //return x( d.end  - 1 - d.beginning  +1)/200 + "px" ;
-                return 20*(x(d.end - d.beginning)/x( d.end  - 1 - d.beginning  +1)) + "px" ;
+                return x( d.end  - 1 - d.beginning  +1)/130 + "px" ;
+                //return 10*(x(d.end - d.beginning)/x( d.end  - 1 - d.beginning  +1)) + "px" ;
             });
 
 
