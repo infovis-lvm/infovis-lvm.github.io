@@ -1,5 +1,15 @@
 var wardata;
 var wardatalen;
+var selected;
+
+function sleep(milliseconds) {
+    var start = new Date().getTime();
+    for (var i = 0; i < 1e7; i++) {
+        if ((new Date().getTime() - start) > milliseconds){
+            break;
+        }
+    }
+}
 
 function mapEntries(json, realrowlength, skip){
     if (!skip) skip = 0;
@@ -24,7 +34,7 @@ function mapEntries(json, realrowlength, skip){
 }
 
 function sheetLoaded(data) {
-    console.log("laod data")
+    //console.log("laod data")
     var temp = mapEntries(data);
     wardatalen = temp[1].length;
 
@@ -43,6 +53,7 @@ function sheetLoaded(data) {
 }
 
 function fix_row(row, i) {
+    row.id = i;
     row.beginning = d3.time.format.iso.parse(row.beginning);
     row.ending = d3.time.format.iso.parse(row.ending);
     row.sterfkans_per_dag = parseInt(row.sterfkans_per_dag);
@@ -50,32 +61,28 @@ function fix_row(row, i) {
 }
 
 function logrow(d) {
-    console.log(d.sterfkans_per_dag);
+    console.log(d.name);
 }
 
 $( function() {
 
-    var csv_text = 'startdate,enddate,intentsity,warname,\n\
-1939-09-01,1945-09-02,2,WW2\n\
-1914-07-28,1918-11-11,20,Mega lange oorlog\n\
-';
-
+    selected = new Array();
 
     var json = wardata;
 
-    var width = $('#vis').width( ) - 10;
+    var width = $('#vis').width( ) - 50;
 
-    console.log(wardata);
+    //console.log(wardata);
 
     json.forEach(fix_row);
 
-    var start = '1860';
+    var start = '1820';
     var ed = "2010"
     var first = d3.time.day.round(d3.time.year.offset(new Date(start), -1)),
         last  =  d3.time.day.round(d3.time.year.offset(new Date(start), 1));
 
     var opts = { range: d3.time.month.range(first, last),
-        width: width, margin: 0, height: 400 };
+        width: width, margin: 100, height: 500 };
     opts.xScale = d3.time.scale()
         .domain( [first, last] )
         .range(  [0, 13 ] )
@@ -84,6 +91,7 @@ $( function() {
     opts.ticks = d3.time.years;
     // draw_graph('test', json, opts);
     draw_graph('First_War_Test', json, opts);
+
 } );
 
 var my = { };
@@ -93,7 +101,7 @@ function draw_graph(name, data, our) {
     var results,
         chart,
         dots,
-        margin = our.margin || 100,
+        margin = our.margin,
         w = 8,
         h = our.height,
         x, y,
@@ -106,9 +114,9 @@ function draw_graph(name, data, our) {
 
     var color = d3.scale.category10();
 
-    console.log(data);
+   // console.log(data);
 
-    data.forEach(logrow);
+    //data.forEach(logrow);
 
 
     var zScale = d3.scale.linear( ).domain(scaleExtent).rangeRound( [0, 1000] );
@@ -124,7 +132,7 @@ function draw_graph(name, data, our) {
     chart = d3.select(selector).append( 'svg' )
         .attr( 'class', 'chart' )
         .attr( 'width', width )
-        .attr( 'height', h+150 )
+        .attr( 'height', h )
         .append('g');
 
     d3.select(selector + ' svg g')
@@ -176,9 +184,9 @@ function draw_graph(name, data, our) {
     names.selectAll('text')
         .data(data)
         .enter().append('text')
-        .attr("stroke", function(d,i) {
-            return color(i);
-        })
+        //.attr("stroke", function(d,i) {
+        //    return color(i);
+       // })
         .attr('dy','-6')
         .attr('text-anchor','middle');
 
@@ -192,9 +200,9 @@ function draw_graph(name, data, our) {
     dots.selectAll( 'line' )
         .data( data )
         .enter().append( 'line' )
-        .attr("stroke", function(d,i) {
-            return color(i);
-        })
+        //.attr("stroke", function(d,i) {
+        //    return color(i);
+        //})
         .attr("stroke-width", "4")
     ;
 
@@ -213,13 +221,13 @@ function draw_graph(name, data, our) {
     ylabel.append("text")
         .attr('class' ,'label')
         .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
-        .attr("transform", "translate("+ (0) +","+(-20)+")")  // text is drawn off the screen top left, move down and out and rotate
+        .attr("transform", "translate("+ (30) +","+(-20)+")")  // text is drawn off the screen top left, move down and out and rotate
         .text("sterfkans per dag");
 
     xlabel.append("text")
         .attr('class' ,'label')
         .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
-        .attr("transform", "translate("+ (width/2) +","+(h-(100/3))+")")  // centre below axis
+        .attr("transform", "translate("+ (width/2) +","+(h-(margin)+50)+")")  // centre below axis
         .text("Date");
 
 
@@ -236,17 +244,47 @@ function draw_graph(name, data, our) {
     chart.append('g')
         .attr('class', 'y axis');
 
-    d3.select(selector + " svg").call(d3.behavior.zoom()
-            .x(x)
-            .scaleExtent( scaleExtent )
-            .scale( 1 )
-            .on("zoom",render)
-    );
+    var zoom = d3.behavior.zoom()
+        .x(x)
+        .scaleExtent( scaleExtent )
+        .scale( 1 )
+        .on("zoom",render);
+
+    var alldata = d3.select(selector + " svg");
+
+    var test = d3.select(".chart").select("g");
+
+    console.log(test);
+
+    test.call(zoom);
+
+    alldata.call(zoom);
+
+
+
+
+    var mc = autocomplete(document.getElementById('autocompletion'))
+            .keys(data)
+            .dataField("name")
+            .placeHolder("Search Wars - Start typing here")
+            .width(960)
+            .height(100)
+            .onSelected(function select(d,i) {
+                selected.push(d);
+                test.call(zoom.event);
+                //zoom(d3.select("#i21"));
+                var x1 = parseInt(d3.select("#i"+ d.id).attr("x1"));
+                var x2 = parseInt(d3.select("#i" + d.id).attr("x2"));
+                test.transition().duration(4000).call(zoom.translate([(((width)/2)-((x1+1+x2+1)/2)),0]).event);
+                //alldata.transition().duration(5500).call(zoom.center([((width/2)-((x1+x2)/2)-1)/2,h/2]).scale(2).event);
+            })
+            .render();
 
 
 
     function render() {
         dots.selectAll("line")
+            .attr( 'id', function(d,i) {return "i"+i;})
             .attr( 'x1', function( d, i ) { return x(d.beginning ) - 1; } )
             .attr( 'x2', function( d, i ) { return x( d.ending ) - 1; } )
             .attr( 'y1', function( d ) { return (h - margin) - y( d.sterfkans_per_dag ) + 1 } )
@@ -258,14 +296,23 @@ function draw_graph(name, data, our) {
 
         names.selectAll("text")
             .text(function(d) {return d.name;})
+            .attr( 'class', function(d,i) {return "i"+i;})
             .attr('x', function(d,i) {
                 return  x( new Date(d.ending.getTime() - (d.ending.getTime()-1 - d.beginning.getTime()-1)/2) );
             })
             .attr('y', function(d,i) {
                 return ((h - margin) - y( d.sterfkans_per_dag ) + 1);
             })
-            .attr('fill', function (d, i) {
-                return color(i);
+            .attr({
+                stroke: function (d, i) {
+                    if (selected.indexOf(d) != -1) {
+                        return "red";
+                    }
+                    else {
+                        return "gray";
+                    }
+                }
+
             })
             .attr('font-size', function(d,i) {
                 return x( d.ending  - 1 - d.beginning  +1)/130 + "px" ;
@@ -276,7 +323,27 @@ function draw_graph(name, data, our) {
 
     }
 
+
     render();
+    /*
+    //alldata.call(zoom.event)
+    //var currentTrans = d3.event.translate;
+    alldata.call(zoom.event);
+    //alldata.transition().duration(5500).call(zoom.translate([x(0),x(0)]).event);
+    //console.log(data[22]);
+    var x1 = parseInt(d3.select("#i21").attr("x1"));
+    var x2 = parseInt(d3.select("#i21").attr("x2"));
+    console.log(x1);
+    console.log(x2);
+    alldata.transition().duration(4000).call(zoom.translate([6*((width/2)-((x1+x2)/2)-1),0]).event);
+    //sleep(1);
+    var x1 = parseInt(d3.select("#i21").attr("x1"));
+    var x2 = parseInt(d3.select("#i21").attr("x2"));
+    console.log(x1);
+    console.log(x2);
+    alldata.transition().duration(5500).call(zoom.center([((width/2)-((x1+x2)/2)-1)/2,h/2]).scale(2).event);
+    //d3.select(selector + " svg").transition().duration(5500).call(zoom.translate([200,200]).event);
+    */
 
 }
 
@@ -288,4 +355,9 @@ function update_data(rows)  {
         draw_graph('test', rows);
     }
 }
+
+
+
+//Setup and render the autocomplete
+
 

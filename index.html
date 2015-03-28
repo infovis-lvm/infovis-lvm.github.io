@@ -1,26 +1,36 @@
+<!DOCTYPE html>
 <html>
 
 <head>
     <title>Infovis LVM</title>
+    <meta HTTP-EQUIV="X-UA-COMPATIBLE" CONTENT="IE=EmulateIE9" >
     <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script type="text/javascript" src="scripts/autocomplete.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="stylesheet" href="fonts/bariol/bariol.css"/>
+    <link rel="stylesheet" href="style/autocompletionStyle.css"/>
+    <link rel="stylesheet" type="text/css" href="style/style.css" />
+
 
 </head>
 
 <body>
 	<h1>LVM</h1>
-	<p>First prototype.</p>
+    </br>
+
+    <div id="autocompletion"style="width:100%; height:100%;"></div>
+
+
     </br>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <script src="http://d3js.org/d3.v3.min.js"></script>
-    <script src="datascript.js"></script>
+    <script src="scripts/datascript.js"></script>
     <div id="vis">
         <div id="test"></div>
     </div>
     <div id="clone">
         <span class="title"></span>
-        <div class ="names"> </div>
+        <div class ="names"></div>
         <div class="view"></div>
     </div>
 

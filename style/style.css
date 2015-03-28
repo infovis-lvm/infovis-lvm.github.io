@@ -6,9 +6,25 @@ text.label {
     color : red;
 }
 
-#First_War_Test > div.view > svg > g > g:nth-child(5) > text
+.dots line {
+    stroke : gray;
+    opacity: 0.3;
+}
+/*
+.names {
+    /*
+    opacity: 0.30;
+    font-family: verdana;
 
+}
+*/
+/*
+.names text {
+    /
+    color : gray;
 
+}
+*/
 body {
     font-family: verdana, sans-serif;
 }
@@ -38,4 +54,3 @@ body {
 .axis text {
     font-size: 12px;
 }
-
