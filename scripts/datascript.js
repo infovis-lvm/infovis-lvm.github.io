@@ -347,6 +347,7 @@ function draw_graph(name, data, our) {
 
 }
 
+d3.select("body").style("cursor", "all-scroll");
 
 
 function update_data(rows)  {
