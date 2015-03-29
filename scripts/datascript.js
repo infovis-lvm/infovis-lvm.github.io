@@ -280,7 +280,7 @@ function draw_graph(name, data, our) {
             })
             .render();
 
-
+    test.transition().duration(4000).call(zoom.translate([100,0]).event);
 
     function render() {
         dots.selectAll("line")
