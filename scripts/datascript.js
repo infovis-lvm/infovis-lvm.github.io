@@ -56,7 +56,7 @@ function fix_row(row, i) {
     row.id = i;
     row.beginning = d3.time.format.iso.parse(row.beginning);
     row.ending = d3.time.format.iso.parse(row.ending);
-    row.sterfkans_per_dag = parseInt(row.sterfkans_per_dag);
+    row.sterfkans_per_dag = parseFloat(row.sterfkans_per_dag);
     row.name = String(row.name);
 }
 
@@ -70,7 +70,7 @@ $( function() {
 
     var json = wardata;
 
-    var width = $('#vis').width( ) - 50;
+    //var width = $('#vis').width( ) - 50;
 
     //console.log(wardata);
 
@@ -81,8 +81,11 @@ $( function() {
     var first = d3.time.day.round(d3.time.year.offset(new Date(start), -1)),
         last  =  d3.time.day.round(d3.time.year.offset(new Date(start), 1));
 
+    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+
     var opts = { range: d3.time.month.range(first, last),
-        width: width, margin: 100, height: 500 };
+        width: w, margin: 100, height: 500 };
     opts.xScale = d3.time.scale()
         .domain( [first, last] )
         .range(  [0, 13 ] )
@@ -94,7 +97,6 @@ $( function() {
 
 } );
 
-var my = { };
 
 
 function draw_graph(name, data, our) {
@@ -105,7 +107,7 @@ function draw_graph(name, data, our) {
         w = 8,
         h = our.height,
         x, y,
-        width = our.width || $('#vis').width( ),
+        width = our.width, //|| $('#vis').width( )
         xAxis, yAxis,
         zoom = 40,
         selector = '#' + name;
@@ -114,7 +116,7 @@ function draw_graph(name, data, our) {
 
     var color = d3.scale.category10();
 
-   // console.log(data);
+    //console.log(data);
 
     //data.forEach(logrow);
 
@@ -153,10 +155,12 @@ function draw_graph(name, data, our) {
         x = x.copy( ).domain([first, last])
             .range( [0, width ] );
     }
-    y = d3.scale.linear()
-        .domain( [0, d3.max( data, function( d ) { return d.sterfkans_per_dag; } )] )
-        .rangeRound( [0, h - margin] );
 
+
+
+    y = d3.scale.log()
+        .domain( [d3.min( data, function( d ) { return d.sterfkans_per_dag; } ), d3.max( data, function( d ) { return d.sterfkans_per_dag; } )] )
+        .range( [0, h - margin] );
 
 
     var safeties = {
@@ -168,12 +172,6 @@ function draw_graph(name, data, our) {
         height: y(140) -  y(70)  + .5
 
     };
-    var bars = chart.append('g')
-        .attr('class', 'safety');
-
-    bars.append('rect')
-        .attr('class', 'safe-sugar')
-    ;
 
     //names
     var namechart = chart.append( 'g' )
@@ -231,10 +229,13 @@ function draw_graph(name, data, our) {
         .text("Date");
 
 
+
     yAxis = d3.svg.axis()
-        .scale(d3.scale.linear().domain( [0, d3.max( data, function( d ) { return d.sterfkans_per_dag || 0; } )] ).rangeRound( [h - margin, 0] ))
-        .ticks(7)
+        .scale(d3.scale.log()
+            .domain( [d3.min( data, function( d ) { return d.sterfkans_per_dag ; } ), d3.max( data, function( d ) { return d.sterfkans_per_dag ; } )] ).rangeRound( [h - margin, 0] ))
+           // .domain( [d3.min( data, function( d ) { return Math.log(1/d.sterfkans_per_dag); } ), d3.max( data, function( d ) { return Math.log(1/d.sterfkans_per_dag); } )] ).rangeRound( [0,h - margin] ))
         .tickSize(6, 3, 1)
+        .ticks(20,",.0e")
         .orient('left');
 
     chart.append('g')
@@ -244,17 +245,21 @@ function draw_graph(name, data, our) {
     chart.append('g')
         .attr('class', 'y axis');
 
+
     var zoom = d3.behavior.zoom()
         .x(x)
         .scaleExtent( scaleExtent )
         .scale( 1 )
         .on("zoom",render);
 
+    var cacheScale = zoom.scale();
+
+    //console.log(cacheScale);
+
     var alldata = d3.select(selector + " svg");
 
     var test = d3.select(".chart").select("g");
 
-    console.log(test);
 
     test.call(zoom);
 
@@ -272,10 +277,14 @@ function draw_graph(name, data, our) {
             .onSelected(function select(d,i) {
                 selected.push(d);
                 test.call(zoom.event);
+                //test.transition().duration(4000).call(zoom.scale(1).event);
                 //zoom(d3.select("#i21"));
+
+                //console.log(d3.event.scale);
+                //zoom.scale(1).translate([0,0]).event;
                 var x1 = parseInt(d3.select("#i"+ d.id).attr("x1"));
                 var x2 = parseInt(d3.select("#i" + d.id).attr("x2"));
-                test.transition().duration(4000).call(zoom.translate([(((width)/2)-((x1+1+x2+1)/2)),0]).event);
+                test.transition().duration(4000).call(zoom.scale(1).translate([(((width)/2)-((x1+1+x2+1)/2))*4,0]).scale(2).event);
                 //alldata.transition().duration(5500).call(zoom.center([((width/2)-((x1+x2)/2)-1)/2,h/2]).scale(2).event);
             })
             .render();
@@ -283,12 +292,14 @@ function draw_graph(name, data, our) {
     test.transition().duration(4000).call(zoom.translate([100,0]).event);
 
     function render() {
+        cacheScale = zoom.scale();
+        //console.log(cacheScale);
         dots.selectAll("line")
             .attr( 'id', function(d,i) {return "i"+i;})
             .attr( 'x1', function( d, i ) { return x(d.beginning ) - 1; } )
             .attr( 'x2', function( d, i ) { return x( d.ending ) - 1; } )
-            .attr( 'y1', function( d ) { return (h - margin) - y( d.sterfkans_per_dag ) + 1 } )
-            .attr( 'y2', function( d ) { return (h - margin) - y( d.sterfkans_per_dag ) + 1 } )
+            .attr( 'y1', function( d ) { return (h - margin) - y( d.sterfkans_per_dag) + 1 } )
+            .attr( 'y2', function( d ) { return (h - margin) - y( d.sterfkans_per_dag) + 1 } )
         ;
         xAxis.scale(x);
         chart.select(".x.axis").call(xAxis);
@@ -304,7 +315,7 @@ function draw_graph(name, data, our) {
                 return ((h - margin) - y( d.sterfkans_per_dag ) + 1);
             })
             .attr({
-                stroke: function (d, i) {
+                fill: function (d, i) {
                     if (selected.indexOf(d) != -1) {
                         return "red";
                     }
