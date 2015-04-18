@@ -413,15 +413,40 @@ function draw_graph(name, data, our) {
     alldata.call(zoom);
 
 
+    var autocompdata = new Array();
 
+    console.log(data);
+
+
+    //TODO add data correct to the object name for the autocompletation and data for the onselected func
+    for (var el in data) {
+        var ob = new Object();
+        ob.data = data[el];
+        ob.name = data[el].name;
+        autocompdata.push(ob);
+        for (var i = 1 ; i < 50 ; i++) {
+            var pr = "involved country "+i
+            if(data[el].hasOwnProperty(pr) && data[el][pr] != 1) {
+               //console.log(data[el][pr]);
+                var landname = String(data[el][pr]);
+                var ob = new Object();
+                ob.data = data[el];
+                ob.name = landname;
+                autocompdata.push(ob);
+            }
+        }
+    }
+
+    //console.log(autocompdata);
 
     var mc = autocomplete(document.getElementById('autocompletion'))
-            .keys(data)
+            .keys(autocompdata)
             .dataField("name")
             .placeHolder("Search Wars - Start typing here")
             .width(960)
             .height(100)
             .onSelected(function select(d,i) {
+                console.log(d)
                 selected.push(d);
                 test.call(zoom.event);
                 //test.transition().duration(4000).call(zoom.scale(1).event);
@@ -429,8 +454,8 @@ function draw_graph(name, data, our) {
 
                 //console.log(d3.event.scale);
                 //zoom.scale(1).translate([0,0]).event;
-                var x1 = parseInt(d3.select("#i"+ d.id).attr("x1"));
-                var x2 = parseInt(d3.select("#i" + d.id).attr("x2"));
+                var x1 = parseInt(d3.select("#i"+ d.data.id).attr("x1"));
+                var x2 = parseInt(d3.select("#i" + d.data.id).attr("x2"));
                 test.transition().duration(4000).call(zoom.scale(1).translate([(((width)/2)-((x1+1+x2+1)/2))*4,0]).scale(2).event);
                 //alldata.transition().duration(5500).call(zoom.center([((width/2)-((x1+x2)/2)-1)/2,h/2]).scale(2).event);
             })
