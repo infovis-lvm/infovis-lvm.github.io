@@ -1,6 +1,7 @@
 var wardata;
 var wardatalen;
 var selected;
+var map;
 
 function sleep(milliseconds) {
     var start = new Date().getTime();
@@ -65,45 +66,7 @@ function logrow(d) {
     console.log(d.name);
 }
 
-$( function() {
-
-    selected = new Array();
-
-    var json = wardata;
-
-    //var width = $('#vis').width( ) - 50;
-
-    //console.log(wardata);
-
-    json.forEach(fix_row);
-
-    wardata = json;
-
-    var start = '1820';
-    var ed = "2010"
-    var first = d3.time.day.round(d3.time.year.offset(new Date(start), -1)),
-        last  =  d3.time.day.round(d3.time.year.offset(new Date(start), 1));
-
-    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
-    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
-
-    var opts = { range: d3.time.month.range(first, last),
-        width: w, margin: 100, height: 500 };
-    opts.xScale = d3.time.scale()
-        .domain( [first, last] )
-        .range(  [0, 13 ] )
-    ;
-    opts.tick_step =  24;
-    opts.ticks = d3.time.years;
-    // draw_graph('test', json, opts);
-    draw_upperGraph(json, opts);
-    draw_graph('First_War_Test', json, opts);
-
-} );
-
 function draw_upperGraph(data,our) {
-
-
     /*
 	var margin = {top: 10, right: 30, bottom: 30, left: 30},
 		width = 960 - margin.left - margin.right,
@@ -113,10 +76,7 @@ function draw_upperGraph(data,our) {
     var names = new Array()
     data.forEach(function(d) {names.push(d.name)});
 
-
-
-
-    var chart = d3.select("#upperGraph").append("svg")
+	var chart = d3.select("#upperGraph").append("svg")
         .attr( 'class', 'chart' )
         .attr( 'width', our.width + our.margin )
         .attr( 'height', our.height )
@@ -135,7 +95,6 @@ function draw_upperGraph(data,our) {
 		.domain(names)
         .rangePoints([0, our.width]);
 
-
 	var y = d3.scale.linear()
 		.domain([0, d3.max(data, function(d) { return d.nb_victims; })])
 		.range([our.height, 0]);
@@ -145,8 +104,7 @@ function draw_upperGraph(data,our) {
         .tickSize(1, 1, 1)
         //.ticks(data.length)
         //.tickFormat(function(d,i){
-        //   return  data[i].name;
-        //})
+        //   return  data[i].name; )}
 		.orient("bottom");
 
     var dots = chart.append('g')
@@ -171,8 +129,8 @@ function draw_upperGraph(data,our) {
 		.attr("text-anchor", "middle")
 		.text(function(d) { return d.y; });
     */
+	
     //chart.select(".x.axis").call(xAxis);
-
 
 	chart.append("g")
 		.attr("class", "xAxis")
@@ -232,6 +190,29 @@ function updateUpperGraph(names) {
 
 }
 
+function highlight_country() {
+	map.updateChoropleth({
+		BRA : '#000000'
+	});
+}
+
+function draw_map(our) {
+	// options on http://datamaps.github.io/
+	map = new Datamap({
+			element: document.getElementById('map'),
+			projecttion : 'mercator',
+			height : our.height,
+			width : our.width + our.margin
+		});
+	
+	highlight_country();
+}
+
+function updateMap() {
+	// TODO
+	
+}
+
 function findNbVictims(name) {
     for (var d in wardata) {
         if(wardata[d].name == name) {
@@ -274,10 +255,7 @@ function draw_graph(name, data, our) {
     selector = selector + ' .view';
      $('#clone').remove();
     */
-
-
-
-    chart = d3.select("#mainGraph").append( 'svg' )
+	chart = d3.select("#mainGraph").append( 'svg' )
         .attr( 'class', 'chart' )
         .attr( 'width', width + margin )
         .attr( 'height', h )
@@ -330,8 +308,7 @@ function draw_graph(name, data, our) {
         .data(data)
         .enter().append('text')
         //.attr("stroke", function(d,i) {
-        //    return color(i);
-       // })
+        //    return color(i); })
         .attr('dy','-6')
         .attr('text-anchor','middle');
 
@@ -346,8 +323,7 @@ function draw_graph(name, data, our) {
         .data( data )
         .enter().append( 'line' )
         //.attr("stroke", function(d,i) {
-        //    return color(i);
-        //})
+        //    return color(i); })
         .attr("stroke-width", "4")
     ;
 
@@ -541,8 +517,44 @@ function draw_graph(name, data, our) {
 
 }
 
-d3.select("body").style("cursor", "all-scroll");
+$( function() {
 
+    selected = new Array();
+
+    var json = wardata;
+
+    //var width = $('#vis').width( ) - 50;
+
+    //console.log(wardata);
+
+    json.forEach(fix_row);
+
+    wardata = json;
+
+    var start = '1820';
+    var ed = "2010"
+    var first = d3.time.day.round(d3.time.year.offset(new Date(start), -1)),
+        last  =  d3.time.day.round(d3.time.year.offset(new Date(start), 1));
+
+    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+
+    var opts = { range: d3.time.month.range(first, last),
+        width: w, margin: 100, height: 500 };
+    opts.xScale = d3.time.scale()
+        .domain( [first, last] )
+        .range(  [0, 13 ] )
+    ;
+    opts.tick_step =  24;
+    opts.ticks = d3.time.years;
+    // draw_graph('test', json, opts);
+    draw_upperGraph(json, opts);
+    draw_graph('First_War_Test', json, opts);
+	draw_map(opts);
+
+} );
+
+d3.select("body").style("cursor", "all-scroll");
 
 function update_data(rows)  {
     if (rows) {
