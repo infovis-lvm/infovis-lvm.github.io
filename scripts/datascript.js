@@ -143,7 +143,7 @@ function updateUpperGraph(names) {
 
     console.log("update");
 
-    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) /2;
     var h = 500; //Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 
     var x = d3.scale.ordinal()
@@ -199,7 +199,7 @@ function highlight_country(country) {
 function draw_map(our) {
 	// options on http://datamaps.github.io/
 	map = new Datamap({
-			element: document.getElementById('map'),
+			element: document.getElementById('upperGraph'),
 			projecttion : 'mercator',
 			height : our.height,
 			width : our.width + our.margin
@@ -220,6 +220,61 @@ function findNbVictims(name) {
             return wardata[d].nb_victims;
         }
     }
+}
+
+function draw_right_graph(data,our) {
+    var names = new Array()
+    data.forEach(function(d) {names.push(d.name)});
+
+    var chart = d3.select("#mainGraph").append("svg")
+        .attr( 'class', 'chart' )
+        .attr( 'width', our.width + our.margin )
+        .attr( 'height', our.height )
+        .append('g')
+        .attr("transform", "translate(" + 50 + "," + -50+ ")");
+
+    /*
+     var svg = d3.select("#upperGraph").append("svg")
+     .attr("width", width + margin.left + margin.right)
+     .attr("height", height + margin.top + margin.bottom)
+     .append("g")
+     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+     */
+
+    var y = d3.scale.ordinal()
+        .domain(names)
+        .rangePoints([0, our.height]);
+
+    var x = d3.scale.linear()
+        .domain([0, d3.max(data, function(d) { return d.nb_victims; })])
+        .range([our.width, 0]);
+
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        .tickSize(1, 1, 1)
+        //.ticks(data.length)
+        //.tickFormat(function(d,i){
+        //   return  data[i].name; })
+        .orient("left");
+
+    var dots = chart.append('g')
+        .attr('class', 'dots');
+
+    var bar = dots.selectAll(".bar")
+        .data(data)
+        .enter().append("g")
+        .attr("class", "bar")
+        .attr("transform", function(d) { return "translate(" + 1 + "," + y(d.name) + ")"; });
+
+    bar.append("rect")
+        .attr("y", 1)
+        .attr("height", 5)
+        .attr("width", function(d) { return our.width - x(d.nb_victims); });
+
+    chart.append("g")
+        .attr("class", "yAxis")
+        .attr("transform", "translate(0," + 0 + ")")
+        .call(yAxis);
 }
 
 function draw_graph(name, data, our) {
@@ -518,6 +573,15 @@ function draw_graph(name, data, our) {
 
 }
 
+d3.select("body").style("cursor", "all-scroll");
+
+function update_data(rows)  {
+    if (rows) {
+        rows.forEach(fix_row);
+        draw_graph('test', rows);
+    }
+}
+
 $( function() {
 
     selected = new Array();
@@ -537,11 +601,11 @@ $( function() {
     var first = d3.time.day.round(d3.time.year.offset(new Date(start), -1)),
         last  =  d3.time.day.round(d3.time.year.offset(new Date(start), 1));
 
-    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
-    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)/2;
+    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 
     var opts = { range: d3.time.month.range(first, last),
-        width: w, margin: 100, height: 500 };
+        width: w - (2*100), margin: 100, height: 500 };
     opts.xScale = d3.time.scale()
         .domain( [first, last] )
         .range(  [0, 13 ] )
@@ -550,21 +614,10 @@ $( function() {
     opts.ticks = d3.time.years;
     // draw_graph('test', json, opts);
     draw_upperGraph(json, opts);
-    draw_graph('First_War_Test', json, opts);
 	draw_map(opts);
-
+    draw_graph('First_War_Test', json, opts);
+    draw_right_graph(json,opts);
 } );
-
-d3.select("body").style("cursor", "all-scroll");
-
-function update_data(rows)  {
-    if (rows) {
-        rows.forEach(fix_row);
-        draw_graph('test', rows);
-    }
-}
-
-
 
 //Setup and render the autocomplete
 
