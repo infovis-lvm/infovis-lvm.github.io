@@ -190,10 +190,10 @@ function updateUpperGraph(names) {
 
 }
 
-function highlight_country() {
-	map.updateChoropleth({
-		BRA : '#000000'
-	});
+function highlight_country(country) {
+	var countryOb = new Object();
+	countryOb[country] = '#000000'
+	map.updateChoropleth(countryOb);
 }
 
 function draw_map(our) {
@@ -205,7 +205,8 @@ function draw_map(our) {
 			width : our.width + our.margin
 		});
 	
-	highlight_country();
+	highlight_country("BRA");
+	highlight_country("BEL");
 }
 
 function updateMap() {
