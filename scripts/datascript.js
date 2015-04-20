@@ -132,27 +132,43 @@ function draw_upperGraph(data,our) {
 	
     //chart.select(".x.axis").call(xAxis);
 
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        // .domain( [d3.min( data, function( d ) { return Math.log(1/d.sterfkans_per_dag); } ), d3.max( data, function( d ) { return Math.log(1/d.sterfkans_per_dag); } )] ).rangeRound( [0,h - margin] ))
+        .tickSize(6, 3, 1)
+        .ticks(5,",.0e")
+        .orient('left');
+
 	chart.append("g")
 		.attr("class", "xAxis")
 		.attr("transform", "translate(0," + our.height + ")")
 		.call(xAxis);
 
+
+
+    chart.append("g")
+        .attr("class", "y axis")
+        //.attr("transform", "translate(0," + our.height + ")")
+        .call(yAxis);
+
 }
 
 function updateUpperGraph(names) {
 
-    console.log("update");
+    //console.log("update");
 
     var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0) /2;
     var h = 500; //Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 
     var x = d3.scale.ordinal()
         .domain(names)
-        .rangePoints([0, w]);
+        .rangePoints([0, w/2]);
 
     var xAxis = d3.svg.axis()
         .scale(x)
         .tickSize(1, 1, 1);
+
+
 
     var y = d3.scale.linear()
         .domain([0, d3.max(wardata, function(d) {
@@ -187,6 +203,8 @@ function updateUpperGraph(names) {
         .attr("class", "xAxis")
         .attr("transform", "translate(0," +h+ ")")
         .call(xAxis);
+
+
 
 }
 
@@ -223,15 +241,14 @@ function findNbVictims(name) {
 }
 
 function draw_right_graph(data,our) {
-    var names = new Array()
-    data.forEach(function(d) {names.push(d.name)});
+
 
     var chart = d3.select("#mainGraph").append("svg")
         .attr( 'class', 'chart' )
         .attr( 'width', our.width + our.margin )
         .attr( 'height', our.height )
         .append('g')
-        .attr("transform", "translate(" + 50 + "," + -50+ ")");
+        .attr("transform", "translate(" + 50 + "," + 50+ ")");
 
     /*
      var svg = d3.select("#upperGraph").append("svg")
@@ -241,14 +258,17 @@ function draw_right_graph(data,our) {
      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
      */
 
-    var y = d3.scale.ordinal()
-        .domain(names)
-        .rangePoints([0, our.height]);
+    var y = d3.scale.log()
+        .domain( [d3.min( data, function( d ) { return d.sterfkans_per_dag; } ), d3.max( data, function( d ) { return d.sterfkans_per_dag; } )] )
+        .range( [0,our.height-our.margin] );
+
 
     var x = d3.scale.linear()
         .domain([0, d3.max(data, function(d) { return d.nb_victims; })])
-        .range([our.width, 0]);
+        .range([0,our.width]);
 
+
+    /*
     var yAxis = d3.svg.axis()
         .scale(y)
         .tickSize(1, 1, 1)
@@ -256,6 +276,22 @@ function draw_right_graph(data,our) {
         //.tickFormat(function(d,i){
         //   return  data[i].name; })
         .orient("left");
+    */
+    var yAxis = d3.svg.axis()
+        .scale(d3.scale.log()
+            .domain( [d3.min( data, function( d ) { return d.sterfkans_per_dag ; } ), d3.max( data, function( d ) { return d.sterfkans_per_dag ; } )] )
+            .rangeRound( [0,our.margin-our.height] ))
+        // .domain( [d3.min( data, function( d ) { return Math.log(1/d.sterfkans_per_dag); } ), d3.max( data, function( d ) { return Math.log(1/d.sterfkans_per_dag); } )] ).rangeRound( [0,h - margin] ))
+        .tickSize(6, 3, 1)
+        .ticks(20,",.0e")
+        .orient('left');
+
+    var xAxis = d3.svg.axis()
+        .scale(x)
+        // .domain( [d3.min( data, function( d ) { return Math.log(1/d.sterfkans_per_dag); } ), d3.max( data, function( d ) { return Math.log(1/d.sterfkans_per_dag); } )] ).rangeRound( [0,h - margin] ))
+        .tickSize(6, 3, 1)
+        .ticks(5,",.0e")
+        .orient('bottom');
 
     var dots = chart.append('g')
         .attr('class', 'dots');
@@ -264,7 +300,88 @@ function draw_right_graph(data,our) {
         .data(data)
         .enter().append("g")
         .attr("class", "bar")
-        .attr("transform", function(d) { return "translate(" + 1 + "," + y(d.name) + ")"; });
+        .attr("transform", function(d) { return "translate(" + 1 + "," + y(d.sterfkans_per_dag) + ")"; });
+
+    bar.append("rect")
+        .attr("y", 1)
+        .attr("height", 5)
+        .attr("width", function(d) { return  x(d.nb_victims); });
+
+    chart.append("g")
+        .attr("class", "y axis")
+        .attr("transform", "translate(0," + (our.height-our.margin) + ")")
+        .call(yAxis);
+
+    chart.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + (our.height-our.margin) + ")")
+        .call(xAxis);
+}
+
+function update_right_graph(names) {
+
+
+    var chart = d3.select("#mainGraph").append("svg")
+        .attr( 'class', 'chart' )
+        .attr( 'width', our.width + our.margin )
+        .attr( 'height', our.height )
+        .append('g')
+        .attr("transform", "translate(" + 50 + "," + 50+ ")");
+
+    /*
+     var svg = d3.select("#upperGraph").append("svg")
+     .attr("width", width + margin.left + margin.right)
+     .attr("height", height + margin.top + margin.bottom)
+     .append("g")
+     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+     */
+
+    var y = d3.scale.log()
+        .domain( [d3.min( data, function( d ) {
+            if(d.name){
+                return d.sterfkans_per_dag;
+            } } ), d3.max( data, function( d ) { return d.sterfkans_per_dag; } )] )
+        .range( [0,our.height-our.margin] );
+
+
+    var x = d3.scale.linear()
+        .domain([0, d3.max(data, function(d) { return d.nb_victims; })])
+        .range([0,our.width]);
+
+
+    /*
+     var yAxis = d3.svg.axis()
+     .scale(y)
+     .tickSize(1, 1, 1)
+     //.ticks(data.length)
+     //.tickFormat(function(d,i){
+     //   return  data[i].name; })
+     .orient("left");
+     */
+    var yAxis = d3.svg.axis()
+        .scale(d3.scale.log()
+            .domain( [d3.min( data, function( d ) { return d.sterfkans_per_dag ; } ), d3.max( data, function( d ) { return d.sterfkans_per_dag ; } )] )
+            .rangeRound( [0,our.margin-our.height] ))
+        // .domain( [d3.min( data, function( d ) { return Math.log(1/d.sterfkans_per_dag); } ), d3.max( data, function( d ) { return Math.log(1/d.sterfkans_per_dag); } )] ).rangeRound( [0,h - margin] ))
+        .tickSize(6, 3, 1)
+        .ticks(20,",.0e")
+        .orient('left');
+
+    var xAxis = d3.svg.axis()
+        .scale(x)
+        // .domain( [d3.min( data, function( d ) { return Math.log(1/d.sterfkans_per_dag); } ), d3.max( data, function( d ) { return Math.log(1/d.sterfkans_per_dag); } )] ).rangeRound( [0,h - margin] ))
+        .tickSize(6, 3, 1)
+        .ticks(5,",.0e")
+        .orient('bottom');
+
+    var dots = chart.append('g')
+        .attr('class', 'dots');
+
+    var bar = dots.selectAll(".bar")
+        .data(data)
+        .enter().append("g")
+        .attr("class", "bar")
+        .attr("transform", function(d) { return "translate(" + 1 + "," + y(d.sterfkans_per_dag) + ")"; });
 
     bar.append("rect")
         .attr("y", 1)
@@ -272,10 +389,16 @@ function draw_right_graph(data,our) {
         .attr("width", function(d) { return our.width - x(d.nb_victims); });
 
     chart.append("g")
-        .attr("class", "yAxis")
-        .attr("transform", "translate(0," + 0 + ")")
+        .attr("class", "y axis")
+        .attr("transform", "translate(0," + (our.height-our.margin) + ")")
         .call(yAxis);
+
+    chart.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + (our.height-our.margin) + ")")
+        .call(xAxis);
 }
+
 
 function draw_graph(name, data, our) {
     var results,
@@ -514,12 +637,16 @@ function draw_graph(name, data, our) {
         var viewednames = new Array();
 
         names.selectAll("text")
-            .text(function(d) {return d.name;})
+            .text(function(d) {return d.name;}) //TODO add name d.name;})
             .attr( 'class', function(d,i) {return "i"+i;})
             .attr('x', function(d,i) {
                 var val = x( new Date(d.ending.getTime() - (d.ending.getTime()-1 - d.beginning.getTime()-1)/2) );
-                if (val > 50 && val < 1200) { // TODO check the correct values start x - width - end x
+
+                console.log(our.width+50);
+                if (val >= 0 && val <= our.width-50) { // TODO check the correct values start x - width - end x
                     //console.log(d.name);
+                    //console.log(val2);
+                    //console.log(val);
                     viewednames.push(d.name);
                     //TODO draw upper graph with these names.
                 }
@@ -544,6 +671,7 @@ function draw_graph(name, data, our) {
                 //return 10*(x(d.ending - d.beginning)/x( d.ending  - 1 - d.beginning  +1)) + "px" ;
             });
 
+        console.log(viewednames)
         updateUpperGraph(viewednames);
 
 
