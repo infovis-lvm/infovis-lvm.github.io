@@ -651,6 +651,7 @@ function draw_graph(name, data, our) {
         names.selectAll("text")
             .text(function(d) {return d.name;}) //TODO add name d.name;})
             .attr( 'class', function(d,i) {return "i"+i;})
+            .attr('onmouseover','mouseover()')
             .attr('x', function(d,i) {
                 var val = x( new Date(d.ending.getTime() - (d.ending.getTime()-1 - d.beginning.getTime()-1)/2) );
 
@@ -720,6 +721,10 @@ function update_data(rows)  {
         rows.forEach(fix_row);
         draw_graph('test', rows);
     }
+}
+
+function mouseover() {
+    alert("kak");
 }
 
 $( function() {
