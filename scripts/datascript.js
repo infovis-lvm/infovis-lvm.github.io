@@ -684,8 +684,8 @@ function draw_graph(name, data, our) {
             });
 
         console.log(viewednames)
-        updateUpperGraph(viewednames);
-        update_right_graph(viewednames);
+        //updateUpperGraph(viewednames);
+        //update_right_graph(viewednames);
 
     }
 
@@ -753,10 +753,10 @@ $( function() {
     opts.tick_step =  24;
     opts.ticks = d3.time.years;
     // draw_graph('test', json, opts);
-    draw_upperGraph(json, opts);
+    //draw_upperGraph(json, opts);
 	draw_map(opts);
     draw_graph('First_War_Test', json, opts);
-    draw_right_graph(json,opts);
+    //draw_right_graph(json,opts);
 } );
 
 //Setup and render the autocomplete
