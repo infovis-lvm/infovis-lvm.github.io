@@ -12,8 +12,8 @@
 
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 
-    <script language="JavaScript" type="text/javascript" src="scripts/dataloader.js"></script>
-    <script language="JavaScript" type="text/javascript" src="scripts/visualization.js"></script>
+   <!-- <script language="JavaScript" type="text/javascript" src="scripts/dataloader.js"></script>
+    <script language="JavaScript" type="text/javascript" src="scripts/visualization.js"></script> -->
 
 
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
@@ -28,25 +28,38 @@
 
 <body>
     <style>
-        #vis {
-            width: 100%;
-            height: 100%;
-        }
-        #header {
-            width: 100%;
-            height: 50px;
-        }
-        #graph {
-            width: 70%;
-            height: 100%;
-        }
-        #worldmap {
-
-        }
+       #vis {
+           width: 100%;
+           height: 100%;
+       }
+       #header {
+           width: 100%;
+           height: 50px;
+       }
+       #graph {
+           width: 70%;
+           height: 50%;
+           float: left;
+       }
+       #ranking {
+           width: 30%;
+           height: 90%;
+           float: right;
+       }
+       #worldmap {
+           width: 35%;
+           height: 40%;
+           float: left;
+       }
+       #infocard {
+           width: 35%;
+           height: 40%;
+       }
         .search-field {
             float: right;
         }
     </style>
+
 
 
 
@@ -56,10 +69,56 @@
                 <input id="search" placeholder="Search for keyword">
             </div>
         </div>
-        <div id="graph"></div>
-        <div id="worldmap"></div>
+        <!--<div id="graph"></div>-->
+        <!--<div id="ranking"></div>-->
+        <!--<div id="worldmap"></div>-->
         <div id="infocard"></div>
-        <div id="ranking"></div>
+
     </div>
+
+        <script>
+        /*
+            d3.select("#worldmap").append("svg")
+            .append("rect")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("height", 200)
+            .attr("width", 200)
+            .style("stroke", "black")
+            .style("fill", "orange")
+            .style("stroke-width", "5");
+
+         d3.select("#ranking").append("svg")
+            .append("rect")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("height", 400)
+            .attr("width", 200)
+            .style("stroke", "black")
+            .style("fill", "orange")
+            .style("stroke-width", "5");
+        */
+
+        var h = parseInt($(window).height());
+        var w = parseInt($(window).width());
+        console.log(h);
+        console.log(w);
+
+
+        d3.select("#infocard").append("svg")
+            .attr("viewBox", "0 0 "+w+" "+h)
+            .append("circle")
+            .attr("cx", 200)
+            .attr("cy", 200)
+            .attr("r", 200)
+            .style("stroke", "black")
+            .style("fill", "orange")
+            .style("stroke-width", "5");
+
+
+
+
+    </script>
+
 </body>
 </html>
