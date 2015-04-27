@@ -3,117 +3,8 @@
  */
 var wardata;
 //autocompletion selected items
-<<<<<<< HEAD
-var selected = new Array();
-
-
-function initVisualization(data) {
-    wardata = data;
-    console.log(wardata);
-
-    var start = '1820';
-    var end ='2010';
-    var margin = 100;
-    var steps = 24
-    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-
-    draw_canvas(w,h);
-
-
-    var first = d3.time.day.round(d3.time.year.offset(new Date(start), -1)),
-        last  =  d3.time.day.round(d3.time.year.offset(new Date(end), 1));
-
-    var opts = {range: d3.time.month.range(first, last),
-        width: w - (2*margin), margin: margin, height: h - (2*margin), startTime: first, endTime: last };
-    opts.tick_step =  steps;
-    opts.ticks = d3.time.years;
-    // draw_graph('test', json, opts);
-    //draw_upperGraph(json, opts);
-    //draw_map(opts);
-    //draw_map(wardata,opts,1,1);
-    //draw_infocart(null);
-    draw_graph(wardata, opts);
-    //draw_right_graph(json,opts);
-    //draw_ranking(wardata,opts,1,1);
-
-
-}
-
-function draw_canvas(width,height) {
-
-    // width of the canvas
-    var canvasWidth = width;
-
-    // height of the canvas
-    var canvasHeight = height;
-
-    // create main canvas element (svg), add it to html
-    var canvas = d3.select("body")
-        .append("svg")
-        .attr("id","vis")
-        .attr("width", canvasWidth)
-        .attr("height", canvasHeight);
-
-    // create titleBar canvas element (svg), add it to main canvas element
-    var titleBarHeight = 40;
-    var titleBarWidth = canvasWidth;
-    var titleBarCanvas = canvas.append("g")
-        .attr("id", "titleBarCanvas")
-        .append("svg")
-        .attr("class","canvas")
-        .attr("width", titleBarWidth)
-        .attr("height", titleBarHeight);
-
-    // create graph canvas element (svg), add it to main canvas element
-    var graphHeight = (canvasHeight - titleBarHeight) * 0.65;
-    var graphWidth = canvasWidth * 0.8;
-    var graphCanvas = canvas.append("g")
-        .attr("id", "graphCanvas")
-        .attr("transform", "translate(" + 0 + "," + titleBarHeight + ")")
-        .append("svg")
-        .attr("class","canvas")
-        .attr("width", graphWidth)
-        .attr("height", graphHeight);
-
-    // create ranking canvas element (svg), add it to main canvas element
-    var rankingHeight = canvasHeight - titleBarHeight;
-    var rankingWidth = canvasWidth - graphWidth;
-    var rankingCanvas = canvas.append("g")
-        .attr("id", "rankingCanvas")
-        .attr("transform", "translate(" + graphWidth + "," + titleBarHeight + ")")
-        .append("svg")
-        .attr("class","canvas")
-        .attr("width", rankingWidth)
-        .attr("height", rankingHeight);
-
-    // create map canvas element (svg), add it to main canvas element
-    var mapHeight = canvasHeight - titleBarHeight - graphHeight;
-    var mapWidth = graphWidth * 0.5;
-    var mapCanvas = canvas.append("g")
-        .attr("id", "mapCanvas")
-        .attr("transform", "translate(" + 0 + "," + (titleBarHeight+graphHeight) + ")")
-        .append("svg")
-        .attr("class","canvas")
-        .attr("width", mapWidth)
-        .attr("height", mapHeight);
-    console.log(mapCanvas);
-
-
-    // create infocard canvas element (svg), add it to main canvas element
-    var infoCardHeight = mapHeight;
-    var infoCardWidth = mapWidth;
-    var infocardCanvas = canvas.append("g")
-        .attr("id","infoCardCanvas")
-        .attr("transform", "translate(" + mapWidth + "," + (titleBarHeight+graphHeight) + ")")
-        .append("svg")
-        .attr("class","canvas")
-        .attr("width", infoCardWidth)
-        .attr("height", infoCardHeight);
-}
-=======
 var selected = [];
->>>>>>> origin/master
+
 
 //draw graph with options, the data, the view settings, width percentage and height percentage
 function draw_ranking(data) {
@@ -205,7 +96,7 @@ function draw_graph(data, our) {
     var zScale = d3.scale.linear( ).domain(scaleExtent).rangeRound( [0, 1000] );
     var zSwitching = d3.scale.linear( ).domain([0,1000]).rangeRound([0,8]);
 
-    chart = d3.select("#graphCanvas .canvas")
+    chart = d3.select("#graph").append("svg")
         .append('g')
         .attr("fill","green")
         .attr("transform", "translate(" + margin/2 + "," + margin/2 + ")");
@@ -345,7 +236,7 @@ function draw_graph(data, our) {
         $("#search").autocomplete({
         source: autocompdata,
         select: function() { alert("test");}
-    });
+        });
 
     /*
     var mc = autocomplete(document.getElementById('autocompletion'))
@@ -425,8 +316,7 @@ function draw_graph(data, our) {
     render();
 
 }
-<<<<<<< HEAD
-=======
+
 
 function initVisualization(data) {
     wardata = data;
@@ -437,9 +327,6 @@ function initVisualization(data) {
         steps = 24,
         w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
         h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-
-    draw_canvas(w,h);
-
 
     var first = d3.time.day.round(d3.time.year.offset(new Date(start), -1)),
         last  =  d3.time.day.round(d3.time.year.offset(new Date(end), 1));
@@ -453,10 +340,10 @@ function initVisualization(data) {
     //draw_map(opts);
     //draw_map(wardata,opts,1,1);
     //draw_infocart(null);
-    draw_graph(wardata, opts);
+    draw_graph(wardata,opts);
     //draw_right_graph(json,opts);
     //draw_ranking(wardata,opts,1,1);
 
 
 }
->>>>>>> origin/master
+
