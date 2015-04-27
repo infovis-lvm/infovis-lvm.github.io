@@ -692,25 +692,6 @@ function draw_graph(name, data, our) {
 
 
     render();
-    /*
-    //alldata.call(zoom.event)
-    //var currentTrans = d3.event.translate;
-    alldata.call(zoom.event);
-    //alldata.transition().duration(5500).call(zoom.translate([x(0),x(0)]).event);
-    //console.log(data[22]);
-    var x1 = parseInt(d3.select("#i21").attr("x1"));
-    var x2 = parseInt(d3.select("#i21").attr("x2"));
-    console.log(x1);
-    console.log(x2);
-    alldata.transition().duration(4000).call(zoom.translate([6*((width/2)-((x1+x2)/2)-1),0]).event);
-    //sleep(1);
-    var x1 = parseInt(d3.select("#i21").attr("x1"));
-    var x2 = parseInt(d3.select("#i21").attr("x2"));
-    console.log(x1);
-    console.log(x2);
-    alldata.transition().duration(5500).call(zoom.center([((width/2)-((x1+x2)/2)-1)/2,h/2]).scale(2).event);
-    //d3.select(selector + " svg").transition().duration(5500).call(zoom.translate([200,200]).event);
-    */
 
 }
 
