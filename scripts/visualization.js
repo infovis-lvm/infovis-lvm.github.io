@@ -3,6 +3,7 @@
  */
 var wardata;
 //autocompletion selected items
+<<<<<<< HEAD
 var selected = new Array();
 
 
@@ -110,14 +111,13 @@ function draw_canvas(width,height) {
         .attr("width", infoCardWidth)
         .attr("height", infoCardHeight);
 }
+=======
+var selected = [];
+>>>>>>> origin/master
 
 //draw graph with options, the data, the view settings, width percentage and height percentage
-function draw_ranking(data, our,wp,hp) {
-    var margin = our.margin,
-        height = our.height*hp,
-        width = our.width*wp;
-
-    chart = d3.select("#rankingCanvas .canvas")
+function draw_ranking(data) {
+    var chart = $("#ranking")
         .append('g');
         //.attr("transform", "translate(" + margin/2 + "," + margin/2 + ")");
 
@@ -172,26 +172,10 @@ function draw_infocart(data) {
     }
 }
 
-function draw_map(data, our) {
-    var margin = our.margin,
-        height = our.height,
-        width = our.width;
-
-    var chart = d3.select("#mapCanvas .canvas")
-        .append('g')
-        .attr("transform", "translate(" + margin/2 + "," + margin/2 + ")");
-
-    var borderPath = chart.append("rect")
-        .attr("x", -margin/2)
-        .attr("y", -margin/2)
-        .attr("height", height)
-        .attr("width", width)
-        .style("stroke", "black")
-        .style("fill", "none")
-        .style("stroke-width", "5");
+function draw_map(data) {
 
     var map = new Datamap({
-        element: document.getElementById('mapCanvas'),
+        element: document.getElementById('worldmap'),
         projection : 'mercator',
         height : mapHeight,
         width : mapHeight
@@ -441,3 +425,38 @@ function draw_graph(data, our) {
     render();
 
 }
+<<<<<<< HEAD
+=======
+
+function initVisualization(data) {
+    wardata = data;
+
+    var start = '1820',
+        end = '2010',
+        margin = 100,
+        steps = 24,
+        w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
+        h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+
+    draw_canvas(w,h);
+
+
+    var first = d3.time.day.round(d3.time.year.offset(new Date(start), -1)),
+        last  =  d3.time.day.round(d3.time.year.offset(new Date(end), 1));
+
+    var opts = {range: d3.time.month.range(first, last),
+        width: w - (2*margin), margin: margin, height: h - (2*margin), startTime: first, endTime: last };
+    opts.tick_step =  steps;
+    opts.ticks = d3.time.years;
+    // draw_graph('test', json, opts);
+    //draw_upperGraph(json, opts);
+    //draw_map(opts);
+    //draw_map(wardata,opts,1,1);
+    //draw_infocart(null);
+    draw_graph(wardata, opts);
+    //draw_right_graph(json,opts);
+    //draw_ranking(wardata,opts,1,1);
+
+
+}
+>>>>>>> origin/master
