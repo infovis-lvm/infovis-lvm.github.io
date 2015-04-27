@@ -29,11 +29,11 @@ function initVisualization(data) {
     // draw_graph('test', json, opts);
     //draw_upperGraph(json, opts);
     //draw_map(opts);
-    draw_map(wardata,opts,1,1);
-    draw_infocart(wardata,opts,1,1);
-    draw_graph(wardata, opts,1,1);
+    //draw_map(wardata,opts,1,1);
+    //draw_infocart(null);
+    draw_graph(wardata, opts);
     //draw_right_graph(json,opts);
-    draw_ranking(wardata,opts,1,1);
+    //draw_ranking(wardata,opts,1,1);
 
 
 }
@@ -96,12 +96,7 @@ function draw_canvas(width,height) {
         .attr("width", mapWidth)
         .attr("height", mapHeight);
     console.log(mapCanvas);
-    var map = new Datamap({
-        element: document.getElementById('mapCanvas'),
-        projecttion : 'mercator',
-        height : mapHeight,
-        width : mapHeight
-    });
+
 
     // create infocard canvas element (svg), add it to main canvas element
     var infoCardHeight = mapHeight;
@@ -137,31 +132,51 @@ function draw_ranking(data, our,wp,hp) {
 
 }
 
-function draw_infocart(data, our,wp,hp) {
-    var margin = our.margin,
-        height = our.height*hp,
-        width = our.width*wp;
+function draw_infocart(data) {
 
-    chart = d3.select("#infoCardCanvas .canvas")
-        .append('g')
-        .attr("transform", "translate(" + margin/2 + "," + margin/2 + ")");
+    d3.select("#infoCardCanvas .canvas g").remove();
 
-    var borderPath = chart.append("rect")
-        .attr("x", -margin/2)
-        .attr("y", -margin/2)
-        .attr("height", height)
-        .attr("width", width)
-        .style("stroke", "black")
-        .style("fill", "none")
-        .style("stroke-width", "5");
+    var chart = d3.select("#infoCardCanvas .canvas")
+        .append("g");
+        //.attr("transform", "translate(" + margin/2 + "," + margin/2 + ")");
+
+
+
+    if(data != null) {
+
+        chart = chart.append("a").attr("xlink:href", data.source);
+
+        var borderPath = chart
+            .append("rect")
+            .attr("id","rectResize")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("height", 200)
+            .attr("width", 200)
+            .style("stroke", "black")
+            .style("fill", "orange")
+            .style("stroke-width", "5");
+
+        var text = chart.append("text")
+            .text(data.description);
+
+        d3plus.textwrap()
+            .container(text)
+            .padding(10)
+            .size([7, 10])
+            .resize(true)
+            .draw();
+
+
+    }
 }
 
-function draw_map(data, our,wp,hp) {
+function draw_map(data, our) {
     var margin = our.margin,
-        height = our.height*hp,
-        width = our.width*wp;
+        height = our.height,
+        width = our.width;
 
-    chart = d3.select("#mapCanvas .canvas")
+    var chart = d3.select("#mapCanvas .canvas")
         .append('g')
         .attr("transform", "translate(" + margin/2 + "," + margin/2 + ")");
 
@@ -173,17 +188,30 @@ function draw_map(data, our,wp,hp) {
         .style("stroke", "black")
         .style("fill", "none")
         .style("stroke-width", "5");
+
+    var map = new Datamap({
+        element: document.getElementById('mapCanvas'),
+        projection : 'mercator',
+        height : mapHeight,
+        width : mapHeight
+    });
+
+
+}
+
+function mouseover(id) {
+    draw_infocart(wardata[id]);
 }
 
 //draw graph with options, the data, the view settings, width percentage and height percentage
-function draw_graph(data, our,wp,hp) {
+function draw_graph(data, our) {
     var results,
         chart,
         dots,
         margin = our.margin,
-        height = our.height*hp,
+        height = our.height-100,
         x, y,
-        width = our.width*wp, //|| $('#vis').width( )
+        width = our.width, //|| $('#vis').width( )
         xAxis, yAxis,
         zoom = 40
     ;
@@ -194,8 +222,13 @@ function draw_graph(data, our,wp,hp) {
 
     chart = d3.select("#graphCanvas .canvas")
         .append('g')
+        .attr("fill","green")
         .attr("transform", "translate(" + margin/2 + "," + margin/2 + ")");
 
+    var rect = chart.append("rect")
+        .attr("width", "100%")
+        .attr("height", "100%")
+        .attr("fill", "pink");
 
     var first = our.startTime,
         last  =  our.endTime;
@@ -284,24 +317,25 @@ function draw_graph(data, our,wp,hp) {
     var zoom = d3.behavior.zoom()
         .x(x)
         .scaleExtent( scaleExtent )
-        .scale( 1 )
+        .scale(20)
         .on("zoom",render);
 
     var cacheScale = zoom.scale();
 
-    var alldata = d3.select("#mainGraph" + " svg");
+    var alldata = d3.select("#graphCanvas");
 
-    var test = d3.select(".chart").select("g");
+    var test = d3.select("#graphCanvas .canvas g");
 
+    zoom(rect);
 
-    test.call(zoom);
+    //test.call(zoom);
 
-    alldata.call(zoom);
+    //alldata.call(zoom);
 
 
     var autocompdata = new Array();
 
-    console.log(data);
+    //console.log(data);
 
 
     //TODO add data correct to the object name for the autocompletation and data for the onselected func
@@ -367,7 +401,7 @@ function draw_graph(data, our,wp,hp) {
         names.selectAll("text")
             .text(function(d) {return d.name;}) //TODO add name d.name;})
             .attr( 'class', function(d,i) {return "i"+i;})
-            .attr('onmouseover','mouseover()')
+            .attr('onmouseover',function(d,i) {return "mouseover("+i+")";})
             .attr('x', function(d,i) {
                 var val = x( new Date(d.ending.getTime() - (d.ending.getTime()-1 - d.beginning.getTime()-1)/2) );
                 if (val >= 0 && val <= width-50) { // TODO check the correct values start x - width - end x
