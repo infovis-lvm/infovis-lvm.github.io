@@ -64,15 +64,13 @@ function draw_infocart(data) {
 }
 
 function draw_map(data) {
-
-    var map = new Datamap({
-        element: document.getElementById('worldmap'),
-        projection : 'mercator',
-        height : mapHeight,
-        width : mapHeight
-    });
-
-
+    var divElem = $("#worldmap"),
+        map = new Datamap({
+            element: divElem[0],
+            projection : 'mercator',
+            height : divElem.height(),
+            width : divElem.width()
+        });
 }
 
 function mouseover(id) {
@@ -81,13 +79,14 @@ function mouseover(id) {
 
 //draw graph with options, the data, the view settings, width percentage and height percentage
 function draw_graph(data, our) {
-    var results,
+    var divElem = $("#graph"),
+        results,
         chart,
         dots,
-        margin = our.margin,
-        height = our.height-100,
+        margin = 50,
+        height = divElem.height(),
         x, y,
-        width = our.width, //|| $('#vis').width( )
+        width = divElem.width(),
         xAxis, yAxis,
         zoom = 40
     ;
@@ -337,7 +336,7 @@ function initVisualization(data) {
     opts.ticks = d3.time.years;
     // draw_graph('test', json, opts);
     //draw_upperGraph(json, opts);
-    //draw_map(opts);
+    draw_map(wardata);
     //draw_map(wardata,opts,1,1);
     //draw_infocart(null);
     draw_graph(wardata,opts);
