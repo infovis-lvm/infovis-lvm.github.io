@@ -5,6 +5,7 @@ var wardata;
 //autocompletion selected items
 var selected = new Array();
 
+
 function initVisualization(data) {
     wardata = data;
     console.log(wardata);
@@ -338,7 +339,7 @@ function draw_graph(data, our) {
     //console.log(data);
 
 
-    //TODO add data correct to the object name for the autocompletation and data for the onselected func
+    //TODO add data correct to the object name for the autocompletation and data for the    onselected func
     for (var el in data) {
         var ob = new Object();
         ob.data = data[el];
@@ -357,7 +358,12 @@ function draw_graph(data, our) {
         }
     }
 
+        $("#search").autocomplete({
+        source: autocompdata,
+        select: function() { alert("test");}
+    });
 
+    /*
     var mc = autocomplete(document.getElementById('autocompletion'))
         .keys(autocompdata)
         .dataField("name")
@@ -379,7 +385,7 @@ function draw_graph(data, our) {
             //alldata.transition().duration(5500).call(zoom.center([((width/2)-((x1+x2)/2)-1)/2,h/2]).scale(2).event);
         })
         .render();
-
+        */
     test.transition().duration(4000).call(zoom.translate([100,0]).event);
 
     function render() {
