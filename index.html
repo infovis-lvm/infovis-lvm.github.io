@@ -12,8 +12,8 @@
 
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 
-   <!-- <script language="JavaScript" type="text/javascript" src="scripts/dataloader.js"></script>
-    <script language="JavaScript" type="text/javascript" src="scripts/visualization.js"></script> -->
+   <script language="JavaScript" type="text/javascript" src="scripts/dataloader.js"></script>
+    <script language="JavaScript" type="text/javascript" src="scripts/visualization.js"></script>
 
 
 	<script src="http://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
@@ -22,46 +22,22 @@
     <link rel="stylesheet" href="fonts/bariol/bariol.css"/>
     <link rel="stylesheet" type="text/css" href="style/style.css" />
 
-
-
 </head>
 
 <body>
     <style>
-       #vis {
-           width: 100%;
-           height: 100%;
-       }
-       #header {
-           width: 100%;
-           height: 50px;
-       }
-       #graph {
-           width: 70%;
-           height: 50%;
-           float: left;
-       }
-       #ranking {
-           width: 30%;
-           height: 90%;
-           float: right;
-       }
-       #worldmap {
-           width: 35%;
-           height: 40%;
-           float: left;
-       }
-       #infocard {
-           width: 35%;
-           height: 40%;
-       }
+        div {
+            margin: 0px;
+            padding: 0px;
+        }
+        body {
+            margin: 0px;
+            padding: 0px;
+        }
         .search-field {
             float: right;
         }
     </style>
-
-
-
 
     <div id="vis">
         <div id="header">
@@ -69,54 +45,72 @@
                 <input id="search" placeholder="Search for keyword">
             </div>
         </div>
-        <!--<div id="graph"></div>-->
-        <!--<div id="ranking"></div>-->
-        <!--<div id="worldmap"></div>-->
+        <div id="graph"></div>
+        <div id="ranking"></div>
+        <div id="worldmap"></div>
         <div id="infocard"></div>
-
     </div>
 
-        <script>
-        /*
-            d3.select("#worldmap").append("svg")
-            .append("rect")
-            .attr("x", 0)
-            .attr("y", 0)
-            .attr("height", 200)
-            .attr("width", 200)
-            .style("stroke", "black")
-            .style("fill", "orange")
-            .style("stroke-width", "5");
+    <!-- sizes the div parts -->
+    <script>
+        var windowWidth = $(window).width();
+        console.log(windowWidth);
+        var windowHeight = $(window).height();
+        console.log(windowHeight);
+        
+        var headerHeightRel = 0.05,
+            graphWidthRel = 0.8,
+            graphHeightRel = 0.55;
+        
+        var headerWidth = windowWidth,
+            headerHeight = headerHeightRel * windowHeight;
+        $("#header").width(headerWidth);
+        $("#header").height(headerHeight);
 
-         d3.select("#ranking").append("svg")
-            .append("rect")
-            .attr("x", 0)
-            .attr("y", 0)
-            .attr("height", 400)
-            .attr("width", 200)
-            .style("stroke", "black")
-            .style("fill", "orange")
-            .style("stroke-width", "5");
-        */
+        var graphWidth = graphWidthRel * windowWidth
+            graphHeight = graphHeightRel * windowHeight;
+        $("#graph").width(graphWidth);
+        $("#graph").height(graphHeight);
 
-        var h = parseInt($(window).height());
-        var w = parseInt($(window).width());
-        console.log(h);
-        console.log(w);
+        var rankingWidth = windowWidth - graphWidth
+            rankingHeight = windowHeight - headerHeight;
+        $("#ranking").width(rankingWidth);
+        $("#ranking").height(rankingHeight);
+        $("#ranking").css({
+            top: headerHeight,
+            left: graphWidth,
+            position: 'absolute',
+            background: "yellow"
+        });
+        
+        var worldmapWidth = graphWidth/2,
+            worldmapHeight = windowHeight - headerHeight - graphHeight;
+        $("#worldmap").width(worldmapWidth);
+        $("#worldmap").height(worldmapHeight);
+        $("#worldmap").css({
+            top: headerHeight+graphHeight,
+            left: 0,
+            position: 'absolute',
+            background: "red"
+        });
 
-
-        d3.select("#infocard").append("svg")
-            .attr("viewBox", "0 0 "+w+" "+h)
-            .append("circle")
-            .attr("cx", 200)
-            .attr("cy", 200)
-            .attr("r", 200)
-            .style("stroke", "black")
-            .style("fill", "orange")
-            .style("stroke-width", "5");
-
-
-
+        var infocardWidth = graphWidth/2,
+            infocardHeight = windowHeight - headerHeight - graphHeight;
+        $("#infocard").width(infocardWidth);
+        $("#infocard").height(infocardHeight);
+        $("#infocard").css({
+            top: headerHeight+graphHeight,
+            left: worldmapWidth,
+            position: 'absolute',
+            background: "blue"
+        });
+        
+        // color for debugging
+        $("#header").css({ background: "green" });
+        $("#graph").css({ background: "orange" });
+        $("#ranking").css({ background: "yellow" });
+        $("#worldmap").css({ background: "red" });
+        $("#infocard").css({ background: "blue" });
 
     </script>
 
