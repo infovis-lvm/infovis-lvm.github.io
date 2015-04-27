@@ -4,11 +4,11 @@
 <head>
     <title>Infovis LVM</title>
     <meta charset="utf-8"/>
-    <script src="http://d3js.org/d3.v3.min.js"></script>
     <script language="JavaScript" type="text/javascript" src="scripts/d3plus.js"></script>
     <script language="JavaScript" type="text/javascript" src="scripts/jquery.js"></script>
-    <script language="JavaScript" type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script language="JavaScript" type="text/javascript" src="scripts/jquery-ui.js"></script>
     <script language="JavaScript" type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 
     <!--<script language="JavaScript" type="text/javascript" src="scripts/dataloader.js"></script> -->
     <!--<script language="JavaScript" type="text/javascript" src="scripts/visualization.js"></script> -->
@@ -21,29 +21,7 @@
     <link rel="stylesheet" type="text/css" href="style/style.css" />
 
 
-</head>
-
-<body>
-    <style>
-        #vis {
-            width: 100%;
-            height: 100%;
-        }
-        #header {
-            width: 100%;
-            height: 50px;
-        }
-        #graph {
-            width: 70%;
-            height: 100%;
-        }
-        #worldmap {
-
-        }
-    </style>
-
-
-    <script>
+      <script>
   $(function() {
     var availableTags = [
       "ActionScript",
@@ -69,11 +47,37 @@
       "Scala",
       "Scheme"
     ];
-    $( "#tags" ).autocomplete({
+    $("#tags").autocomplete({
       source: availableTags
     });
   });
   </script>
+
+
+</head>
+
+<body>
+    <style>
+        #vis {
+            width: 100%;
+            height: 100%;
+        }
+        #header {
+            width: 100%;
+            height: 50px;
+        }
+        #graph {
+            width: 70%;
+            height: 100%;
+        }
+        #worldmap {
+
+        }
+        .ui-widget {
+            float: right;
+        }
+    </style>
+
 
 
     <div id="vis">
