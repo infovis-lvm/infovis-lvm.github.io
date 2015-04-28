@@ -20,11 +20,28 @@
 	<script src="scripts/datamaps.world.min.js"></script>
 
     <link rel="stylesheet" href="fonts/bariol/bariol.css"/>
+    <link rel="stylesheet" type="text/css" href="style/colors.css" />
     <link rel="stylesheet" type="text/css" href="style/style.css" />
 
 </head>
 
 <body>
+
+
+    <div id="vis">
+        <div id="header">
+            <div class ="title color-primary-0">Leuke Visualisaties voor Mensen
+                <div class="search-field">
+                    <input id="search" placeholder="Search for keyword">
+                </div>
+            </div>
+        </div>
+        <div id="graph"></div>
+        <div id="ranking"></div>
+        <div id="worldmap"></div>
+        <div id="infocard"></div>
+    </div>
+
     <style>
         div {
             margin: 0px;
@@ -34,22 +51,28 @@
             margin: 0px;
             padding: 0px;
         }
+        .title {
+            text-align: center;
+            vertical-align: middle;
+            line-height: 50px;   /*     the same as your div height */
+            font-size: 30px;
+            font-family: "bariol_regularregular";
+        }
+        #header {
+            box-shadow: 0px 1px gray inset;
+        }
         .search-field {
+            text-align: center;
             float: right;
+            vertical-align: middle;
+            margin-right: 20px;
+        }
+        #search {
+            vertical-align: middle;
+            height: 19px;
+            margin-bottom: 5px;
         }
     </style>
-
-    <div id="vis">
-        <div id="header">
-            <div class="search-field">
-                <input id="search" placeholder="Search for keyword">
-            </div>
-        </div>
-        <div id="graph"></div>
-        <div id="ranking"></div>
-        <div id="worldmap"></div>
-        <div id="infocard"></div>
-    </div>
 
     <!-- sizes the div parts -->
     <script>
@@ -58,12 +81,12 @@
         var windowHeight = $(window).height();
         console.log(windowHeight);
         
-        var headerHeightRel = 0.05,
+        var headerHeightRel = 0,
             graphWidthRel = 0.8,
             graphHeightRel = 0.55;
         
         var headerWidth = windowWidth,
-            headerHeight = headerHeightRel * windowHeight;
+            headerHeight = 50;
         $("#header").width(headerWidth);
         $("#header").height(headerHeight);
 
