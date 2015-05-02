@@ -26,10 +26,10 @@ function draw_ranking(data) {
 
 function draw_infocart(data) {
 
-    d3.select("#infoCardCanvas .canvas g").remove();
+    //d3.select("#infocard g").remove();
 
-    var chart = d3.select("#infoCardCanvas .canvas")
-        .append("g");
+    var chart = d3.select("#infocard")
+        .append("svg");
         //.attr("transform", "translate(" + margin/2 + "," + margin/2 + ")");
 
 
@@ -40,11 +40,11 @@ function draw_infocart(data) {
 
         var borderPath = chart
             .append("rect")
-            .attr("id","rectResize")
-            .attr("x", 0)
-            .attr("y", 0)
-            .attr("height", 200)
-            .attr("width", 200)
+            .attr("id","rectangle")
+            .attr("x", 2.5)
+            .attr("y", 2.5)
+            .attr("height", $("#infocard").height()-5)
+            .attr("width", $("#infocard").width()-5)
             .style("stroke", "black")
             .style("fill", "orange")
             .style("stroke-width", "5");
@@ -59,6 +59,33 @@ function draw_infocart(data) {
             .resize(true)
             .draw();
 
+
+    }
+
+    else {
+
+        chart = chart.append("a").attr("xlink:href", "http://www.wikipedia.org/");
+
+        var borderPath = chart
+            .append("rect")
+            .attr("id","rectangle")
+            .attr("x", 2.5)
+            .attr("y", 2.5)
+            .attr("height", $("#infocard").height()-5)
+            .attr("width", $("#infocard").width()-5)
+            .style("stroke", "black")
+            .style("fill", "orange")
+            .style("stroke-width", "5");
+
+        var text = chart.append("text")
+            .text("Select a war");
+
+        d3plus.textwrap()
+            .container(text)
+            .padding(10)
+            .size([7, 10])
+            .resize(true)
+            .draw();
 
     }
 }
@@ -338,7 +365,7 @@ function initVisualization(data) {
     //draw_upperGraph(json, opts);
     draw_map(wardata);
     //draw_map(wardata,opts,1,1);
-    //draw_infocart(null);
+    draw_infocart(null);
     draw_graph(wardata,opts);
     //draw_right_graph(json,opts);
     //draw_ranking(wardata,opts,1,1);
