@@ -6,11 +6,20 @@
 text.label {
     color : red;
 }
-
+*/
 .dots line {
     stroke : gray;
     opacity: 0.3;
+
+
+.x.axis line {
+    stroke: red;
 }
+
+.y.axis line {
+    stroke: red;
+}
+
 /*
 .names {
     /*
@@ -42,17 +51,9 @@ body {
     fill: steelblue;
 }
 
-.axis {
-    shape-rendering: crispEdges;
-}
 
-.x.axis line {
-    stroke: black;
-}
 
-.y.axis line {
-    stroke: black;
-}
+
 
 .axis text {
     font-size: 12px;

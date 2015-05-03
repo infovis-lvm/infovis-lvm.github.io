@@ -15,19 +15,109 @@ var vis_state;
 
 // draw graph with the given data, selection, highlight and metric
 function draw_ranking(data, state) {
-    var div = $("#ranking"),
-        chart = div.append('g');
         //.attr("transform", "translate(" + margin/2 + "," + margin/2 + ")");
+    var height= $("#ranking").height();
+    var width= $("#ranking").width();
+    var margin = 50;
     
-    // TODO voorlopig een rechthoek
-    var borderPath = chart.append("rect")
-        .attr("x", 0)
-        .attr("y", 0)
-        .attr("height", div.height*0.2)
-        .attr("width", div.width*0.2)
-        .style("stroke", "black")
-        .style("fill", "none")
-        .style("stroke-width", "5");
+    var svg = d3.select("#ranking")
+        .append("svg")
+        .attr("height",height-margin/2)
+        .attr("width",width-margin/2)
+        .append("g")
+        .attr("transform", "translate(" + margin + "," + margin + ")");
+
+    var names = new Array()
+    data.forEach(function(d) {names.push(d.name)});
+
+
+    var y = d3.scale.ordinal()
+		.domain(names)
+        .rangePoints([0, height-margin]);
+
+    var x = d3.scale.linear()
+        .domain([0, d3.max(data, function(d) { return d.nb_victims; })])
+		.range([0,width]);
+
+
+    var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("top")
+    .tickSize(6, 3, 1)
+    .tickFormat(d3.format(".s"));
+
+    var yAxis = d3.svg.axis()
+    .scale(y)
+    .tickSize(6, 3, 1)
+    .orient("left");
+
+
+
+        //.attr("transform", "translate(" + margin/2 + "," + margin/2 + ")");
+
+  svg.append("g")
+      .attr("class", "x axis")
+      //.attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+
+    svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis);
+  /*
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Frequency");
+    */
+var dots=  svg.append("g")
+        .attr("class","dots");
+
+  dots.selectAll(".bar")
+      .data(data)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d) { return 1; })
+      .attr("width", function(d) { return x(d.nb_victims); })
+      .attr("y", function(d) {return y(d.name);})
+      .attr("height", 10);
+
+/*
+  d3.select("input").on("change", change);
+
+  var sortTimeout = setTimeout(function() {
+    d3.select("input").property("checked", true).each(change);
+  }, 2000);
+
+  function change() {
+    clearTimeout(sortTimeout);
+
+    // Copy-on-write since tweens are evaluated after a delay.
+    var x0 = x.domain(data.sort(this.checked
+        ? function(a, b) { return b.frequency - a.frequency; }
+        : function(a, b) { return d3.ascending(a.letter, b.letter); })
+        .map(function(d) { return d.letter; }))
+        .copy();
+
+    svg.selectAll(".bar")
+        .sort(function(a, b) { return x0(a.letter) - x0(b.letter); });
+
+    var transition = svg.transition().duration(750),
+        delay = function(d, i) { return i * 50; };
+
+    transition.selectAll(".bar")
+        .delay(delay)
+        .attr("x", function(d) { return x0(d.letter); });
+
+    transition.select(".x.axis")
+        .call(xAxis)
+      .selectAll("g")
+        .delay(delay);
+  }
+
+    */
 }
 
 // draw the infocard with the given selection and highlight
@@ -143,7 +233,7 @@ function draw_graph(data, state) {
         .attr("width",width)
         .attr("height",height)
         .append('g')
-        .attr("fill","green")
+        //.attr("fill","green")
         .attr("width",width-margin/2)
         .attr("transform", "translate(" + margin/2 + "," + margin/2 + ")");
 
@@ -362,7 +452,7 @@ function draw_graph(data, state) {
 }
 
 function draw_all(data, state) {
-    //draw_ranking(data, state);
+    draw_ranking(data, state);
     draw_infocart(data, state);
     draw_map(data, state);
     draw_graph(data, state); 
