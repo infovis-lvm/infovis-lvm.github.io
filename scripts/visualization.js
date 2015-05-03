@@ -201,14 +201,23 @@ function draw_infocart(data, state) {
 
 // draw map with the given selection and highlight
 function draw_map(data, state) {
-    var divElem = $("#worldmap"),
-        map = new Datamap({
-            element: divElem[0],
-            projection : 'mercator',
-            height : divElem.height(),
-            width : divElem.width()
+    // http://jvectormap.com/documentation/javascript-api/jvm-map/
+    // http://jvectormap.com/maps/world/world/
+    
+    // create map
+    var div = $("#worldmap"),
+        map = div.vectorMap({
+            onRegionOver : map_region_hover,
+            onRegionClick : map_region_click
         });
+    
+    
+    
     // TODO color selection and highlight (if not null)
+    
+    // TODO link triggers to change-methods
+    
+    
 }
 
 //draw graph with options, the data, the view settings, width percentage and height percentage
@@ -530,4 +539,14 @@ function change_highlight(highlight) {
 function mouseover(id) {
     // TODO waarvoor is deze mouseover? gebruik highlight changed
     draw_infocart(wardata[id]);
+}
+
+function map_region_hover(event, code) {
+    // console.log('hoverd over ' + code + ' on the map');
+    // TODO change highlight
+}
+
+function map_region_click(event, code) {
+    console.log('clicked on ' + code + ' on the map');
+    // TODO change selection
 }
