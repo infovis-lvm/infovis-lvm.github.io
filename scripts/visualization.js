@@ -18,14 +18,16 @@ function draw_ranking(data, state) {
         //.attr("transform", "translate(" + margin/2 + "," + margin/2 + ")");
     var height= $("#ranking").height();
     var width= $("#ranking").width();
-    var margin = 50;
+    var topmargin = 50;
+    var leftmargin = 120;
+
     
     var svg = d3.select("#ranking")
         .append("svg")
-        .attr("height",height-margin/2)
-        .attr("width",width-margin/2)
+        .attr("height",height-topmargin/2)
+        .attr("width",width-leftmargin/2)
         .append("g")
-        .attr("transform", "translate(" + margin + "," + margin + ")");
+        .attr("transform", "translate(" + leftmargin + "," + topmargin + ")");
 
     var names = new Array()
     data.forEach(function(d) {names.push(d.name)});
@@ -33,7 +35,7 @@ function draw_ranking(data, state) {
 
     var y = d3.scale.ordinal()
 		.domain(names)
-        .rangePoints([0, height-margin]);
+        .rangePoints([0, height]);
 
     var x = d3.scale.linear()
         .domain([0, d3.max(data, function(d) { return d.nb_victims; })])
@@ -82,7 +84,7 @@ var dots=  svg.append("g")
       .attr("x", function(d) { return 1; })
       .attr("width", function(d) { return x(d.nb_victims); })
       .attr("y", function(d) {return y(d.name);})
-      .attr("height", 10);
+      .attr("height", 4);
 
 /*
   d3.select("input").on("change", change);
