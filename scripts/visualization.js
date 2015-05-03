@@ -116,11 +116,10 @@ function draw_map(data, state) {
     var div = $("#worldmap"),
         map = new Datamap({
             element: div[0],
-            projection : 'mercator'//,
-            //height : div.height(),
-            //width : div.width()
+            height : div.height(),
+            width : div.width()
         });
-    console.log('map div size: ' + div.width() + ' ' + div.height());
+    
     // TODO color selection and highlight (if not null)
 }
 
