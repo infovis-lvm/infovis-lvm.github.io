@@ -5,26 +5,39 @@ var wardata;
 //autocompletion selected items
 var selected = [];
 
+// state of the visualisation, attributes are
+// 'metric', 'startdate', 'enddate', 'selection' and 'highlight'
+var vis_state;
 
-//draw graph with options, the data, the view settings, width percentage and height percentage
-function draw_ranking(data) {
-    var chart = $("#ranking")
-        .append('g');
+// ------------- //
+// DRAW ELEMENTS //
+// ------------- //
+
+// draw graph with the given data, selection, highlight and metric
+function draw_ranking(data, state) {
+    var div = $("#ranking"),
+        chart = div.append('g');
         //.attr("transform", "translate(" + margin/2 + "," + margin/2 + ")");
-
+    
+    // TODO voorlopig een rechthoek
     var borderPath = chart.append("rect")
         .attr("x", 0)
         .attr("y", 0)
-        .attr("height", height*0.2)
-        .attr("width", width*0.2)
+        .attr("height", div.height*0.2)
+        .attr("width", div.width*0.2)
         .style("stroke", "black")
         .style("fill", "none")
         .style("stroke-width", "5");
-
-
 }
 
-function draw_infocart(data) {
+// draw the infocard with the given selection and highlight
+function draw_infocart(data, state) {
+    
+    // TODO:
+    // if highlight is null:
+    //      if selection is null: show empty infocard
+    //      else: show selection
+    // else: show highlight
 
     var height= $("#infocard").height();
     var width= $("#infocard").width();
@@ -96,7 +109,8 @@ function draw_infocart(data) {
     }
 }
 
-function draw_map(data) {
+// draw map with the given selection and highlight
+function draw_map(data, state) {
     var divElem = $("#worldmap"),
         map = new Datamap({
             element: divElem[0],
@@ -104,14 +118,11 @@ function draw_map(data) {
             height : divElem.height(),
             width : divElem.width()
         });
-}
-
-function mouseover(id) {
-    draw_infocart(wardata[id]);
+    // TODO color selection and highlight (if not null)
 }
 
 //draw graph with options, the data, the view settings, width percentage and height percentage
-function draw_graph(data, our) {
+function draw_graph(data, state) {
     var divElem = $("#graph"),
         results,
         chart,
@@ -143,20 +154,15 @@ function draw_graph(data, our) {
         .attr("fill", "pink");
     */
 
-    var first = our.startTime,
-        last  =  our.endTime;
-
     x = d3.time.scale()
-        .domain( [first, last] )
+        .domain( [state.startdate, state.enddate] )
         .range(  [0, 13 ]);
 
     if (x.range()[1] < width) {
         last = x.invert(width);
-        x = x.copy( ).domain([first, last])
+        x = x.copy( ).domain([state.startdate, state.enddate])
             .range( [0, width ] );
     }
-
-
 
     y = d3.scale.log()
         .domain( [d3.min( data, function( d ) { return d.sterfkans_per_dag; } ), d3.max( data, function( d ) { return d.sterfkans_per_dag; } )] )
@@ -355,33 +361,83 @@ function draw_graph(data, our) {
 
 }
 
+function draw_all(data, state) {
+    //draw_ranking(data, state);
+    draw_infocart(data, state);
+    draw_map(data, state);
+    draw_graph(data, state); 
+}
 
+// -------------- //
+// INITIALISATION //
+// -------------- //
 function initVisualization(data) {
     wardata = data;
 
-    var start = '1820',
-        end = '2010',
-        margin = 100,
-        steps = 24,
-        w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
-        h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-
-    var first = d3.time.day.round(d3.time.year.offset(new Date(start), -1)),
-        last  =  d3.time.day.round(d3.time.year.offset(new Date(end), 1));
-
-    var opts = {range: d3.time.month.range(first, last),
-        width: w - (2*margin), margin: margin, height: h - (2*margin), startTime: first, endTime: last };
-    opts.tick_step =  steps;
-    opts.ticks = d3.time.years;
-    // draw_graph('test', json, opts);
-    //draw_upperGraph(json, opts);
-    draw_map(wardata);
-    //draw_map(wardata,opts,1,1);
-    draw_infocart(null);
-    draw_graph(wardata,opts);
-    //draw_right_graph(json,opts);
-    //draw_ranking(wardata,opts,1,1);
-
-
+    // TODO remove opts mechanism once ranking is ok
+//    var start = '1820',
+//        end = '2010',
+//        margin = 100,
+//        steps = 24,
+//        w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
+//        h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0),
+//        opts = {
+//            range: d3.time.month.range(first, last),
+//            width: w - (2*margin),
+//            margin: margin,
+//            height: h - (2*margin),
+//            startTime: first,
+//            endTime: last
+//        };
+//    opts.tick_step =  steps;
+//    opts.ticks = d3.time.years;
+    
+    // create initial state
+    vis_state = new Object();
+    vis_state.metric = null // TODO select initial metric
+    vis_state.startdate = d3.time.day.round(d3.time.year.offset(new Date('1820'), -1));
+    vis_state.enddate = d3.time.day.round(d3.time.year.offset(new Date('2010'), 1));
+    vis_state.selection = null; // TODO select initial selection 
+    vis_state.highlight = null;
+    
+    // draw elements
+    draw_all(wardata, vis_state);
 }
 
+// ------------- //
+// INTERACTIVITY //
+// ------------- //
+
+function change_metric(metric) {
+    vis_state.metric = metric;
+    
+    //TODO update metric dropdown
+    draw_ranking(wardata, vis_state);
+    draw_graph(wardata, vis_state);
+}
+
+function change_dates(begindate, enddate) {
+    state.begindate = begindate;
+    state.enddate = enddate;
+    
+    //TODO update graph
+    // aangezien er geen andere elementen worden aangepast zullen we dit waarschijnlijk niet met dit mechanisme doen
+}
+
+function change_selection(selection) {
+    vis_state.selection = selection;
+    
+    draw_all(wardata, vis_state);
+}
+
+function change_highlight(highlight) {
+    vis_state.highlight = highlight;
+    
+    draw_all(wardata, vis_state);
+}
+
+
+function mouseover(id) {
+    // TODO waarvoor is deze mouseover? gebruik highlight changed
+    draw_infocart(wardata[id]);
+}
