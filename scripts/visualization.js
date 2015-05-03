@@ -111,13 +111,16 @@ function draw_infocart(data, state) {
 
 // draw map with the given selection and highlight
 function draw_map(data, state) {
-    var divElem = $("#worldmap"),
+    // https://github.com/markmarkoh/datamaps/blob/master/README.md#getting-started
+    
+    var div = $("#worldmap"),
         map = new Datamap({
-            element: divElem[0],
-            projection : 'mercator',
-            height : divElem.height(),
-            width : divElem.width()
+            element: div[0],
+            projection : 'mercator'//,
+            //height : div.height(),
+            //width : div.width()
         });
+    console.log('map div size: ' + div.width() + ' ' + div.height());
     // TODO color selection and highlight (if not null)
 }
 
