@@ -26,10 +26,16 @@ function draw_ranking(data) {
 
 function draw_infocart(data) {
 
-    //d3.select("#infocard g").remove();
+    var height= $("#infocard").height();
+    var width= $("#infocard").width();
+
+    d3.select("#infocard #cardHolder").remove();
 
     var chart = d3.select("#infocard")
-        .append("svg");
+        .append("svg")
+        .attr("id","cardHolder")
+        .attr("height",width)
+        .attr("width",width);
         //.attr("transform", "translate(" + margin/2 + "," + margin/2 + ")");
 
 
@@ -43,8 +49,8 @@ function draw_infocart(data) {
             .attr("id","rectangle")
             .attr("x", 2.5)
             .attr("y", 2.5)
-            .attr("height", $("#infocard").height()-5)
-            .attr("width", $("#infocard").width()-5)
+            .attr("height", height-5)
+            .attr("width", width-5)
             .style("stroke", "black")
             .style("fill", "orange")
             .style("stroke-width", "5");
@@ -110,7 +116,7 @@ function draw_graph(data, our) {
         results,
         chart,
         dots,
-        margin = 50,
+        margin = 100,
         height = divElem.height(),
         x, y,
         width = divElem.width(),
@@ -123,14 +129,19 @@ function draw_graph(data, our) {
     var zSwitching = d3.scale.linear( ).domain([0,1000]).rangeRound([0,8]);
 
     chart = d3.select("#graph").append("svg")
+        .attr("width",width)
+        .attr("height",height)
         .append('g')
         .attr("fill","green")
+        .attr("width",width-margin/2)
         .attr("transform", "translate(" + margin/2 + "," + margin/2 + ")");
 
+    /*
     var rect = chart.append("rect")
-        .attr("width", "100%")
-        .attr("height", "100%")
+        .attr("width", width-margin/2)
+        .attr("height", height-margin/2)
         .attr("fill", "pink");
+    */
 
     var first = our.startTime,
         last  =  our.endTime;
@@ -211,6 +222,7 @@ function draw_graph(data, our) {
 
     chart.append('g')
         .attr('class', 'x axis')
+        .attr('width',width-margin)
         .attr('transform', 'translate(0, ' + (height - margin) + ')');
 
     chart.append('g')
@@ -228,7 +240,7 @@ function draw_graph(data, our) {
 
     var test = d3.select("#graphCanvas .canvas g");
 
-    zoom(rect);
+    zoom(d3.select("#graph"));
 
     //test.call(zoom);
 
