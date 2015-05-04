@@ -21,6 +21,9 @@ function draw_ranking(data, state) {
     var width= $("#ranking").width();
     var topmargin = 50;
     var leftmargin = 120;
+    var thisdata = data;
+
+    d3.select("#ranking svg").remove();
 
     
     var svg = d3.select("#ranking")
@@ -30,16 +33,23 @@ function draw_ranking(data, state) {
         .append("g")
         .attr("transform", "translate(" + leftmargin + "," + topmargin + ")");
 
+
+    if(state.viewed.length > 0) {
+        thisdata = state.viewed;
+    }
+
+    console.log(thisdata);
+
     var names = new Array()
-    data.forEach(function(d) {names.push(d.name)});
+    thisdata.forEach(function(d) {names.push(d.name)});
 
 
     var y = d3.scale.ordinal()
 		.domain(names)
-        .rangePoints([0, height]);
+        .rangePoints([0, height-2*topmargin]);
 
     var x = d3.scale.linear()
-        .domain([0, d3.max(data, function(d) { return d.nb_victims; })])
+        .domain([0, d3.max(thisdata, function(d) { return d.nb_victims; })])
 		.range([0,width]);
 
 
@@ -79,7 +89,7 @@ var dots=  svg.append("g")
         .attr("class","dots");
 
   dots.selectAll(".bar")
-      .data(data)
+      .data(thisdata)
     .enter().append("rect")
       .attr("class", "bar")
       .attr("x", function(d) { return 1; })
@@ -426,7 +436,7 @@ function draw_graph(data, state) {
         chart.select(".y.axis").call(yAxis);
 
 
-        var viewednames = new Array();
+        vis_state.viewed = new Array();
 
         names.selectAll("text")
             .text(function(d) {return d.name;}) //TODO add name d.name;})
@@ -436,7 +446,7 @@ function draw_graph(data, state) {
             .attr('x', function(d,i) {
                 var val = x( new Date(d.ending.getTime() - (d.ending.getTime()-1 - d.beginning.getTime()-1)/2) );
                 if (val >= 0 && val <= width-50) { // TODO check the correct values start x - width - end x
-                    viewednames.push(d.name);
+                    vis_state.viewed.push(d);
                     //TODO draw upper graph with these names.
                 }
                 return  x( new Date(d.ending.getTime() - (d.ending.getTime()-1 - d.beginning.getTime()-1)/2) );
@@ -460,6 +470,7 @@ function draw_graph(data, state) {
                 //return x(d.ending  - 1 - d.beginning  +1)/130 + "px" ;
                 //return 10*(x(d.ending - d.beginning)/x( d.ending  - 1 - d.beginning  +1)) + "px" ;
             });
+        draw_ranking(data,vis_state);
 
     }
 
@@ -507,6 +518,7 @@ function initVisualization(data) {
     vis_state.enddate = d3.time.day.round(d3.time.year.offset(new Date('2010'), 1));
     vis_state.selection = []; // TODO select initial selection
     vis_state.highlight = [];
+    vis_state.viewed = [];
     
     // draw elements
     draw_all(wardata, vis_state);
