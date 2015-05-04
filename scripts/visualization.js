@@ -46,7 +46,7 @@ function draw_ranking(data, state) {
 
     var y = d3.scale.ordinal()
 		.domain(names)
-        .rangePoints([0, height-2*topmargin]);
+        .rangeRoundBands([0,height-topmargin],1);
 
     var x = d3.scale.linear()
         .domain([0, d3.max(thisdata, function(d) { return d.nb_victims; })])
@@ -94,8 +94,8 @@ var dots=  svg.append("g")
       .attr("class", "bar")
       .attr("x", function(d) { return 1; })
       .attr("width", function(d) { return x(d.nb_victims); })
-      .attr("y", function(d) {return y(d.name);})
-      .attr("height", 4);
+      .attr("y", function(d) {return y(d.name)-5;})
+      .attr("height", 10);
 
 /*
   d3.select("input").on("change", change);
@@ -308,6 +308,7 @@ function draw_graph(data, state) {
     // Axis
     xAxis = d3.svg.axis()
         .scale(x)
+        .orient("top")
         .tickSize(12, 1, 1)
     ;
 
@@ -316,7 +317,7 @@ function draw_graph(data, state) {
 
     var ylabel = chart.append('g');
 
-
+    /*
     ylabel.append("text")
         .attr('class' ,'label')
         .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
@@ -328,7 +329,7 @@ function draw_graph(data, state) {
         .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
         .attr("transform", "translate("+ (width/2) +","+(height-(margin)+50)+")")  // centre below axis
         .text("Date");
-
+        */
 
 
     yAxis = d3.svg.axis()
@@ -340,8 +341,8 @@ function draw_graph(data, state) {
 
     chart.append('g')
         .attr('class', 'x axis')
-        .attr('width',width-margin)
-        .attr('transform', 'translate(0, ' + (height - margin) + ')');
+        .attr('width',width-margin);
+        //.attr('transform', 'translate(0, ' + (height - margin) + ')');
 
     chart.append('g')
         .attr('class', 'y axis');
@@ -482,7 +483,7 @@ function draw_graph(data, state) {
 
 function draw_all(data, state) {
     draw_ranking(data, state);
-    draw_infocart(data, state);
+    draw_infocart(null, state);
     draw_map(data, state);
     draw_graph(data, state); 
 }

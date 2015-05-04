@@ -28,9 +28,12 @@ text.label {
     stroke: red;
 }
 
-#ranking .y.axis text { font-family: sans-serif; font-size: 10px; }
-#ranking .x.axis text { font-family: sans-serif; font-size: 5px; }
-
+#ranking .y.axis text { font-family: sans-serif; font-size: 10px; fill:rgba(80, 80, 80,0.6) }
+#ranking .x.axis text { font-family: sans-serif; font-size: 5px;  }
+#ranking .dots rect {
+    fill : #700800;
+    opacity: 0.3;
+}
 /*
 .ui-menu .ui-menu-item a{
     background:white;
