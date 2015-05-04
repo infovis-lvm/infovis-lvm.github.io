@@ -10,6 +10,7 @@
     <script language="JavaScript" type="text/javascript" src="scripts/d3plus.js"></script>
 
 
+    <link href="http://ajax.googleapis.com//ajax/libs/jqueryui/1.7.2/themes/start/jquery-ui.css" type="text/css" rel="Stylesheet" />
 
     <script language="JavaScript" type="text/javascript" src="scripts/dataloader.js"></script>
     <script language="JavaScript" type="text/javascript" src="scripts/visualization.js"></script>
@@ -20,8 +21,8 @@
     <script src="scripts/jquery-jvectormap-world-mill-en.js"></script>
 
     <link rel="stylesheet" href="fonts/bariol/bariol.css"/>
-    <link rel="stylesheet" type="text/css" href="style/colors.css" />
-    <link rel="stylesheet" type="text/css" href="style/style.css" />
+    <link rel="stylesheet" type="text/css" href="/style/colors.css" />
+    <link rel="stylesheet" type="text/css" href="/style/style.css" />
 
 </head>
 
@@ -103,7 +104,7 @@
             top: headerHeight,
             left: graphWidth,
             position: 'absolute',
-            background: "yellow"
+            //background: "yellow"
         });
         
         var worldmapWidth = graphWidth/2,
@@ -114,7 +115,7 @@
             top: headerHeight+graphHeight,
             left: 0,
             position: 'absolute',
-            background: "red"
+            //background: "red"
         });
 
         var infocardWidth = graphWidth/2,
@@ -125,16 +126,17 @@
             top: headerHeight+graphHeight,
             left: worldmapWidth,
             position: 'absolute',
-            background: "blue"
+            //background: "blue"
         });
         
         // color for debugging
+        /*
         $("#header").css({ background: "green" });
         $("#graph").css({ background: "orange" });
         $("#ranking").css({ background: "yellow" });
         $("#worldmap").css({ background: "red" });
         $("#infocard").css({ background: "blue" });
-
+        */
 
 
 

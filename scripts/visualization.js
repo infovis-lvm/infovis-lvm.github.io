@@ -9,6 +9,7 @@ var selected = [];
 // 'metric', 'startdate', 'enddate', 'selection' and 'highlight'
 var vis_state;
 
+
 // ------------- //
 // DRAW ELEMENTS //
 // ------------- //
@@ -124,7 +125,7 @@ var dots=  svg.append("g")
 
 // draw the infocard with the given selection and highlight
 function draw_infocart(data, state) {
-    
+    var stroke = {width: 1};
     // TODO:
     // if highlight is null:
     //      if selection is null: show empty infocard
@@ -152,13 +153,13 @@ function draw_infocart(data, state) {
         var borderPath = chart
             .append("rect")
             .attr("id","rectangle")
-            .attr("x", 2.5)
-            .attr("y", 2.5)
-            .attr("height", height-5)
-            .attr("width", width-5)
-            .style("stroke", "black")
-            .style("fill", "orange")
-            .style("stroke-width", "5");
+            .attr("x", stroke.width/2)
+            .attr("y", stroke.width/2)
+            .attr("height", height-stroke.width)
+            .attr("width", width-stroke.width);
+            //.style("stroke", stroke.color)
+            //.style("fill", "orange")
+            //.style("stroke-width", stroke.width);
 
         var text = chart.append("text")
             .text(data.description);
@@ -180,13 +181,13 @@ function draw_infocart(data, state) {
         var borderPath = chart
             .append("rect")
             .attr("id","rectangle")
-            .attr("x", 2.5)
-            .attr("y", 2.5)
-            .attr("height", $("#infocard").height()-5)
-            .attr("width", $("#infocard").width()-5)
-            .style("stroke", "black")
-            .style("fill", "orange")
-            .style("stroke-width", "5");
+            .attr("x", stroke.width/2)
+            .attr("y", stroke.width/2)
+            .attr("height", $("#infocard").height()-stroke.width)
+            .attr("width", $("#infocard").width()-stroke.width);
+            //.style("stroke", stroke.color)
+            //.style("fill", "orange")
+            //.style("stroke-width", stroke.width);
 
         var text = chart.append("text")
             .text("Select a war");
@@ -363,7 +364,7 @@ function draw_graph(data, state) {
     for (var el in data) {
         var ob = new Object();
         ob.data = data[el];
-        ob.name = data[el].name;
+        ob.label = data[el].name;
         autocompdata.push(ob);
         for (var i = 1 ; i < 50 ; i++) {
             var pr = "involved country "+i
@@ -372,7 +373,7 @@ function draw_graph(data, state) {
                 var landname = String(data[el][pr]);
                 var ob = new Object();
                 ob.data = data[el];
-                ob.name = landname;
+                ob.label = landname;
                 autocompdata.push(ob);
             }
         }
@@ -382,7 +383,10 @@ function draw_graph(data, state) {
         source: autocompdata,
         select: function() { alert("test");}
         });
+    //.data("autocomplete")._renderItem = function(ul, item) {
+    //    return $("<li>").data("item.autocomplete", item).append("<a>" + item.name + "</a>").appendTo(ul);
 
+    console.log(autocompdata);
     /*
     var mc = autocomplete(document.getElementById('autocompletion'))
         .keys(autocompdata)
@@ -428,6 +432,7 @@ function draw_graph(data, state) {
             .text(function(d) {return d.name;}) //TODO add name d.name;})
             .attr( 'class', function(d,i) {return "i"+i;})
             .attr('onmouseover',function(d,i) {return "mouseover("+i+")";})
+            .attr('onclick',function(d,i) {return "click("+i+");render();";})
             .attr('x', function(d,i) {
                 var val = x( new Date(d.ending.getTime() - (d.ending.getTime()-1 - d.beginning.getTime()-1)/2) );
                 if (val >= 0 && val <= width-50) { // TODO check the correct values start x - width - end x
@@ -441,17 +446,18 @@ function draw_graph(data, state) {
             })
             .attr({
                 fill: function (d, i) {
-                    if (selected.indexOf(d) != -1) {
+                    if (state.highlight == d) {
                         return "red";
                     }
                     else {
-                        return "gray";
+                        return "rgba(80,80,80,0.5)";
                     }
                 }
 
             })
             .attr('font-size', function(d,i) {
-                return x( d.ending  - 1 - d.beginning  +1)/130 + "px" ;
+                return "12 px";
+                //return x(d.ending  - 1 - d.beginning  +1)/130 + "px" ;
                 //return 10*(x(d.ending - d.beginning)/x( d.ending  - 1 - d.beginning  +1)) + "px" ;
             });
 
@@ -461,6 +467,7 @@ function draw_graph(data, state) {
     render();
 
 }
+
 
 function draw_all(data, state) {
     draw_ranking(data, state);
@@ -498,8 +505,8 @@ function initVisualization(data) {
     vis_state.metric = null // TODO select initial metric
     vis_state.startdate = d3.time.day.round(d3.time.year.offset(new Date('1820'), -1));
     vis_state.enddate = d3.time.day.round(d3.time.year.offset(new Date('2010'), 1));
-    vis_state.selection = null; // TODO select initial selection 
-    vis_state.highlight = null;
+    vis_state.selection = []; // TODO select initial selection
+    vis_state.highlight = [];
     
     // draw elements
     draw_all(wardata, vis_state);
@@ -541,6 +548,12 @@ function change_highlight(highlight) {
 function mouseover(id) {
     // TODO waarvoor is deze mouseover? gebruik highlight changed
     draw_infocart(wardata[id]);
+}
+
+function click(id) {
+    // TODO waarvoor is deze mouseover? gebruik highlight changed
+    vis_state.highlight = wardata[id];
+    //draw_all(wardata, vis_state);
 }
 
 function map_region_hover(event, code) {
