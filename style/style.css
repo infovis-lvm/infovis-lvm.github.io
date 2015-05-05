@@ -28,8 +28,8 @@ text.label {
     stroke: red;
 }
 
-#ranking .y.axis text { font-family: sans-serif; font-size: 10px; fill:rgba(80, 80, 80,0.6) }
-#ranking .x.axis text { font-family: sans-serif; font-size: 5px;  }
+#ranking text.warnameText  { font-family: sans-serif; font-size: 10px; fill:rgba(80, 80, 80,0.6) }
+#ranking text.victimText  { font-family: sans-serif; font-size: 10px; fill:#FFFFFF }
 #ranking .dots rect {
     fill : #700800;
     opacity: 0.3;

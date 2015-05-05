@@ -20,7 +20,7 @@ function draw_ranking(data, state) {
     var height= $("#ranking").height();
     var width= $("#ranking").width();
     var topmargin = 50;
-    var leftmargin = 120;
+    var leftmargin = 0;
     var thisdata = data;
 
     d3.select("#ranking svg").remove();
@@ -48,9 +48,9 @@ function draw_ranking(data, state) {
 		.domain(names)
         .rangeRoundBands([0,height-topmargin],1);
 
-    var x = d3.scale.linear()
-        .domain([0, d3.max(thisdata, function(d) { return d.nb_victims; })])
-		.range([0,width]);
+    var x = d3.scale.log()
+        .domain([Math.pow(10,2), d3.max(thisdata, function(d) { return d.nb_victims; })])
+		.range([1,width-10]);
 
 
     var xAxis = d3.svg.axis()
@@ -67,7 +67,7 @@ function draw_ranking(data, state) {
 
 
         //.attr("transform", "translate(" + margin/2 + "," + margin/2 + ")");
-
+/*
   svg.append("g")
       .attr("class", "x axis")
       //.attr("transform", "translate(0," + height + ")")
@@ -77,6 +77,7 @@ function draw_ranking(data, state) {
     svg.append("g")
       .attr("class", "y axis")
       .call(yAxis);
+      */
   /*
     .append("text")
       .attr("transform", "rotate(-90)")
@@ -88,14 +89,49 @@ function draw_ranking(data, state) {
 var dots=  svg.append("g")
         .attr("class","dots");
 
-  dots.selectAll(".bar")
+var bars = dots.selectAll(".bar")
       .data(thisdata)
-    .enter().append("rect")
+    .enter().append("g");
+
+  bars.append("rect")
       .attr("class", "bar")
       .attr("x", function(d) { return 1; })
       .attr("width", function(d) { return x(d.nb_victims); })
-      .attr("y", function(d) {return y(d.name)-5;})
-      .attr("height", 10);
+      .attr("y", function(d) {return y(d.name)-7.5;})
+      .attr("height", 15);
+
+bars.append("text")
+    .attr("class","warnameText")
+    .attr("x", function(d) { return 1; })
+    .attr("y", function(d) {return y(d.name)-8;})
+    .style("width", function(d) { return x(d.nb_victims ) + "px"; })
+    .text(function(d) {return d.name;});
+
+bars.append("text")
+    .attr("class","victimText")
+    .attr("x", function(d) { return x(d.nb_victims)/2 ; })
+    .attr("y", function(d) {return y(d.name)+4;})
+    .attr("text-anchor", "end")
+    .style("width", function(d) { return x(d.nb_victims ) + "px"; })
+    .text(function(d) {return String(d.nb_victims);});
+    /*
+    .attr("x", function(d) { return x(d.nb_victims); })
+    .attr("y", function(d) {return y(d.name);})
+    .attr("vertical-align","right")
+    .attr("dominant-baseline", "central")
+    .style("width", function(d) { return x(d.nb_victims ) + "px"; })
+    .text(function(d) {return String(d.nb_victims);});
+    */
+
+/*
+dots.selectAll(".bar")
+    .data(thisdata).enter()
+    .style("text-anchor", "middle")
+    .attr("transform", function(d) {
+                return "rotate(-90)"
+    })
+
+    */
 
 /*
   d3.select("input").on("change", change);
@@ -177,7 +213,7 @@ function draw_infocart(data, state) {
         d3plus.textwrap()
             .container(text)
             .padding(10)
-            .size([7, 10])
+            .size([7, 20])
             .resize(true)
             .draw();
 
