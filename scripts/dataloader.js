@@ -62,8 +62,8 @@ function mapEntries(json, realrowlength, skip){
 //parse the values in the row to the correct type.
 function fix_row(row, i) {
     row.id = i;
-    row.beginning = d3.time.format.iso.parse(row.beginning);
-    row.ending = d3.time.format.iso.parse(row.ending);
+    row.beginning = d3.time.format.iso.parse(new Date(row.beginning));
+    row.ending = d3.time.format.iso.parse(new Date(row.ending));
     row.sterfkans_per_dag = parseFloat(row.sterfkans_per_dag);
     row.name = String(row.name);
     row.nb_victims = parseInt(row.nb_victims);
