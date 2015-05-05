@@ -82,7 +82,8 @@
         var windowHeight = $(window).height();
         //console.log(windowHeight);
         
-        var headerHeightRel = 0,
+        // CONFIGURE HERE :
+        var headerHeightAbs = 50,
             graphWidthRel = 0.6,
             graphHeightRel = 1;
             rankingWidhtRel =0.4;
@@ -90,13 +91,12 @@
             rankingHeigtRel = 0.33
         
         var headerWidth = windowWidth,
-            headerHeight = 50;
-        var margin = 50;
+            headerHeight = headerHeightAbs;
         var graphWidth = graphWidthRel * windowWidth
             graphHeight = graphHeightRel * windowHeight - headerHeight;
 
         var worldmapWidth = windowWidth * rankingWidhtRel,
-            worldmapHeight = (windowHeight - headerHeight-margin) *worldmapRelHeight;
+            worldmapHeight = (windowHeight - headerHeight) *worldmapRelHeight;
 
         var rankingWidth = windowWidth * rankingWidhtRel;
             rankingHeight = worldmapHeight;
@@ -131,7 +131,7 @@
         $("#worldmap").width(worldmapWidth);
         $("#worldmap").height(worldmapHeight);
         $("#worldmap").css({
-            top: headerHeight+margin,
+            top: headerHeight + 1, // to show bottom border of header
             left: graphWidth,
             position: 'absolute',
             //background: "red"

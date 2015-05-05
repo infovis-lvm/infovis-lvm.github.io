@@ -257,7 +257,26 @@ function draw_map(data, state) {
     var div = $("#worldmap"),
         map = div.vectorMap({
             onRegionOver : map_region_hover,
-            onRegionClick : map_region_click
+            onRegionClick : map_region_click,
+            backgroundColor : 'white',
+            regionStyle : {
+                initial: {
+                    fill: 'grey',
+                    "fill-opacity": 1,
+                    stroke: 'none',
+                    "stroke-width": 0,
+                    "stroke-opacity": 1
+                },
+                hover: {
+                    "fill-opacity": 0.8,
+                    cursor: 'pointer'
+                }/*,
+                selected: {
+                    fill: 'yellow'
+                },
+                selectedHover: {
+                }*/
+            }
         });
     
     
@@ -344,7 +363,7 @@ function draw_graph(data, state) {
     // Axis
     xAxis = d3.svg.axis()
         .scale(x)
-        .orient("top")
+        .orient("bottom")
         .tickSize(12, 1, 1)
     ;
 
@@ -377,8 +396,8 @@ function draw_graph(data, state) {
 
     chart.append('g')
         .attr('class', 'x axis')
-        .attr('width',width-margin);
-        //.attr('transform', 'translate(0, ' + (height - margin) + ')');
+        .attr('width',width-margin)
+        .attr('transform', 'translate(0, ' + (height - margin) + ')');
 
     chart.append('g')
         .attr('class', 'y axis');

@@ -15,6 +15,11 @@ text.label {
     border-bottom-width: 1px;
     border-bottom-color:  rgba(0,0,0,0.1);
 }
+
+#worldmap {
+    background-color: white;
+}
+
 .dots line {
     stroke : #700800;
     opacity: 0.3;
