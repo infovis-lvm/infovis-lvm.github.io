@@ -9,6 +9,8 @@ var selected = [];
 // 'metric', 'startdate', 'enddate', 'selection' and 'highlight'
 var vis_state;
 
+var vis_previous_state;
+
 
 // ------------- //
 // DRAW ELEMENTS //
@@ -19,8 +21,6 @@ function draw_ranking(data, state) {
         //.attr("transform", "translate(" + margin/2 + "," + margin/2 + ")");
     var height= $("#ranking").height();
     var width= $("#ranking").width();
-    var topmargin = 50;
-    var leftmargin = 0;
     var thisdata = data;
 
     d3.select("#ranking svg").remove();
@@ -28,145 +28,94 @@ function draw_ranking(data, state) {
     
     var svg = d3.select("#ranking")
         .append("svg")
-        .attr("height",height-topmargin/2)
-        .attr("width",width-leftmargin/2)
-        .append("g")
-        .attr("transform", "translate(" + leftmargin + "," + topmargin + ")");
+        .attr("height",height)
+        .attr("width",width)
+        .append("g");
 
+    var size = height /3;
 
-    if(state.viewed.length > 0) {
-        thisdata = state.viewed;
-    }
+    svg.append("text").attr("class","backtext").text("TOP 12")
+        .attr('x', width/2)
+        .attr('y', (height/2)+size/4)
+        .attr("font-size", size)
+        .attr("text-anchor", "middle")
+        .attr("text-height", size/2)
+        .attr('width', width)
+        .attr('height', height);
 
-    console.log(thisdata);
+    var dots=  svg.append("g")
+        .attr("class","dots");
+
+}
+
+function update_ranking(prev_v,vers) {
+    // Copy-on-write since tweens are evaluated after a delay.
+    var height= $("#ranking").height();
+    var width= $("#ranking").width();
+
+    var svg = d3.select("#ranking svg g");
+
+    var v = vers.viewed.slice(0,12);
+
 
     var names = new Array()
-    thisdata.forEach(function(d) {names.push(d.name)});
+    v.forEach(function(d) {names.push(d.name)});
 
+    //console.log(names);
 
     var y = d3.scale.ordinal()
 		.domain(names)
-        .rangeRoundBands([0,height-topmargin],1);
+        .rangeRoundBands([0,height],1);
 
     var x = d3.scale.log()
-        .domain([Math.pow(10,2), d3.max(thisdata, function(d) { return d.nb_victims; })])
+        .domain([Math.pow(10,2), d3.max(v, function(d) { return d.nb_victims; })])
 		.range([1,width-10]);
 
+var dots = d3.select("#ranking .dots");
 
-    var xAxis = d3.svg.axis()
-    .scale(x)
-    .orient("top")
-    .tickSize(6, 3, 1)
-    .tickFormat(d3.format(".s"));
+dots.selectAll(".barinstance").remove();
 
-    var yAxis = d3.svg.axis()
-    .scale(y)
-    .tickSize(6, 3, 1)
-    .orient("left");
-
-
-
-        //.attr("transform", "translate(" + margin/2 + "," + margin/2 + ")");
-/*
-  svg.append("g")
-      .attr("class", "x axis")
-      //.attr("transform", "translate(0," + height + ")")
-      .call(xAxis);
-
-
-    svg.append("g")
-      .attr("class", "y axis")
-      .call(yAxis);
-      */
-  /*
-    .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end")
-      .text("Frequency");
-    */
-var dots=  svg.append("g")
-        .attr("class","dots");
-
-var bars = dots.selectAll(".bar")
-      .data(thisdata)
-    .enter().append("g");
+var bars = dots.selectAll(".dots")
+    .data(v)
+    .enter().append("g")
+    .attr("class","barinstance")
+    .attr("transform", function(d) { return "translate(1,"+y(d.name)+")"; });
 
   bars.append("rect")
       .attr("class", "bar")
-      .attr("x", function(d) { return 1; })
       .attr("width", function(d) { return x(d.nb_victims); })
-      .attr("y", function(d) {return y(d.name)-7.5;})
       .attr("height", 15);
 
 bars.append("text")
     .attr("class","warnameText")
-    .attr("x", function(d) { return 1; })
-    .attr("y", function(d) {return y(d.name)-8;})
-    .style("width", function(d) { return x(d.nb_victims ) + "px"; })
     .text(function(d) {return d.name;});
 
 bars.append("text")
     .attr("class","victimText")
-    .attr("x", function(d) { return x(d.nb_victims)/2 ; })
-    .attr("y", function(d) {return y(d.name)+4;})
-    .attr("text-anchor", "end")
-    .style("width", function(d) { return x(d.nb_victims ) + "px"; })
+    .attr("x", function(d) { return x(d.nb_victims) - 50; })
+    .attr("y", 10)
     .text(function(d) {return String(d.nb_victims);});
-    /*
-    .attr("x", function(d) { return x(d.nb_victims); })
-    .attr("y", function(d) {return y(d.name);})
-    .attr("vertical-align","right")
-    .attr("dominant-baseline", "central")
-    .style("width", function(d) { return x(d.nb_victims ) + "px"; })
-    .text(function(d) {return String(d.nb_victims);});
-    */
 
-/*
-dots.selectAll(".bar")
-    .data(thisdata).enter()
-    .style("text-anchor", "middle")
-    .attr("transform", function(d) {
-                return "rotate(-90)"
-    })
+    var sorted_names = v.sort(function(a, b) { return b.nb_victims - a.nb_victims; }).map(function(d) {return d.name;});
 
-    */
+    console.log(sorted_names);
 
-/*
-  d3.select("input").on("change", change);
-
-  var sortTimeout = setTimeout(function() {
-    d3.select("input").property("checked", true).each(change);
-  }, 2000);
-
-  function change() {
-    clearTimeout(sortTimeout);
-
-    // Copy-on-write since tweens are evaluated after a delay.
-    var x0 = x.domain(data.sort(this.checked
-        ? function(a, b) { return b.frequency - a.frequency; }
-        : function(a, b) { return d3.ascending(a.letter, b.letter); })
-        .map(function(d) { return d.letter; }))
+    var y0 = y.domain(sorted_names)
         .copy();
 
-    svg.selectAll(".bar")
-        .sort(function(a, b) { return x0(a.letter) - x0(b.letter); });
-
+    /*
+    svg.selectAll(".barinstance")
+        .sort(function(a, b) { return y0(a.name) - y0(b.name); });
+*/
     var transition = svg.transition().duration(750),
-        delay = function(d, i) { return i * 50; };
+        delay = function(d, i) { return i * 100; };
 
-    transition.selectAll(".bar")
+    transition.selectAll(".barinstance")
         .delay(delay)
-        .attr("x", function(d) { return x0(d.letter); });
+        .attr("transform", function(d) { return "translate( 1,"+y0(d.name)+")"; });
 
-    transition.select(".x.axis")
-        .call(xAxis)
-      .selectAll("g")
-        .delay(delay);
-  }
 
-    */
+
 }
 
 // draw the infocard with the given selection and highlight
@@ -491,7 +440,7 @@ function draw_graph(data, state) {
         chart.select(".x.axis").call(xAxis);
         chart.select(".y.axis").call(yAxis);
 
-
+        vis_previous_state = jQuery.extend(true, {}, vis_state);
         vis_state.viewed = new Array();
 
         names.selectAll("text")
@@ -526,7 +475,8 @@ function draw_graph(data, state) {
                 //return x(d.ending  - 1 - d.beginning  +1)/130 + "px" ;
                 //return 10*(x(d.ending - d.beginning)/x( d.ending  - 1 - d.beginning  +1)) + "px" ;
             });
-        draw_ranking(data,vis_state);
+
+        change_viewed(vis_previous_state,vis_state);
 
     }
 
@@ -592,9 +542,9 @@ function change_metric(metric) {
     draw_graph(wardata, vis_state);
 }
 
-function change_dates(begindate, enddate) {
-    state.begindate = begindate;
-    state.enddate = enddate;
+function change_viewed(prev_v, v) {
+
+    update_ranking(prev_v,v);
     
     //TODO update graph
     // aangezien er geen andere elementen worden aangepast zullen we dit waarschijnlijk niet met dit mechanisme doen

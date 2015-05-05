@@ -47,6 +47,10 @@ text.label {
 }
 */
 
+.backtext {
+    font-family: sans-serif;  fill:rgba(80, 80, 80,0.1);
+}
+
 ul.ui-autocomplete {
     list-style: none;
     list-style-type: none;
@@ -54,15 +58,22 @@ ul.ui-autocomplete {
     margin: 0px;
 }
 
-rect#rectangle {
-    stroke: rgba(80, 80, 80,0.6);
-    fill: #FFD647;
+.card {
+    border-left-style: solid;
+    border-left-width: 1px;
+    border-left-color: rgba(80, 80, 80,0.6);
+    /*fill: #FFD647;
     fill-opacity: 0.1;
-    stroke-width: 1px;
     x: 0.5px;
     y: 0.5px;
+    */
 }
 
+rect#rectangle {
+    fill: #FFFFFF;
+    fill-opacity: 0.1;
+}
+*/
 /*
 .names {
     /*

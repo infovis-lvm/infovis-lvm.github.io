@@ -37,10 +37,10 @@
                 </div>
             </div>
         </div>
-        <div id="worldmap"></div>
+        <div id="worldmap" class="card"></div>
         <div id="graph"></div>
-        <div id="ranking"></div>
-        <div id="infocard"></div>
+        <div id="ranking" class="card"></div>
+        <div id="infocard" class="card"></div>
     </div>
 
     <style>
@@ -68,6 +68,7 @@
             vertical-align: middle;
             margin-right: 20px;
         }
+
         #search {
             vertical-align: middle;
             height: 19px;
@@ -92,6 +93,7 @@
         
         var headerWidth = windowWidth,
             headerHeight = headerHeightAbs;
+
         var graphWidth = graphWidthRel * windowWidth
             graphHeight = graphHeightRel * windowHeight - headerHeight;
 
