@@ -98,7 +98,7 @@ bars.append("text")
 
     var sorted_names = v.sort(function(a, b) { return b.nb_victims - a.nb_victims; }).map(function(d) {return d.name;});
 
-    console.log(sorted_names);
+    //console.log(sorted_names);
 
     var y0 = y.domain(sorted_names)
         .copy();
@@ -401,7 +401,7 @@ function draw_graph(data, state) {
     //.data("autocomplete")._renderItem = function(ul, item) {
     //    return $("<li>").data("item.autocomplete", item).append("<a>" + item.name + "</a>").appendTo(ul);
 
-    console.log(autocompdata);
+    //console.log(autocompdata);
     /*
     var mc = autocomplete(document.getElementById('autocompletion'))
         .keys(autocompdata)
@@ -426,6 +426,7 @@ function draw_graph(data, state) {
         .render();
         */
     test.transition().duration(4000).call(zoom.translate([100,0]).event);
+
 
     function render() {
         cacheScale = zoom.scale();
@@ -580,6 +581,6 @@ function map_region_hover(event, code) {
 }
 
 function map_region_click(event, code) {
-    console.log('clicked on ' + code + ' on the map');
+    //console.log('clicked on ' + code + ' on the map');
     // TODO change selection
 }
