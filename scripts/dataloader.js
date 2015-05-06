@@ -32,7 +32,7 @@ $.getJSON(url, function(data) {
 
     wardata  = wardata.filter(Boolean);
 
-    initVisualization(wardata);
+    init_visualization(wardata);
 
 });
 
