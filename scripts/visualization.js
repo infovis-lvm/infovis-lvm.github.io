@@ -61,7 +61,7 @@ function draw_infocart(data, state) {
         .attr("id","cardHolder")
         .attr("height",width)
         .attr("width",width);
-        //.attr("transform", "translate(" + margin/2 + "," + margin/2 + ")");
+        //.attr("transform", "translate(" + margin/2 + "," + margin/2 + ")"); // TODO remove
 
     if(state.selection != null && data != null) {
         
@@ -76,7 +76,7 @@ function draw_infocart(data, state) {
             .attr("y", stroke.width/2)
             .attr("height", height-stroke.width)
             .attr("width", width-stroke.width);
-            //.style("stroke", stroke.color)
+            //.style("stroke", stroke.color) // TODO remove
             //.style("fill", "orange")
             //.style("stroke-width", stroke.width);
 
@@ -100,7 +100,7 @@ function draw_infocart(data, state) {
             .attr("y", stroke.width/2)
             .attr("height", $("#infocard").height()-stroke.width)
             .attr("width", $("#infocard").width()-stroke.width);
-            //.style("stroke", stroke.color)
+            //.style("stroke", stroke.color) // TODO remove
             //.style("fill", "orange")
             //.style("stroke-width", stroke.width);
 
@@ -137,7 +137,7 @@ function draw_map(data, state) {
                 hover: {
                     "fill-opacity": 0.8,
                     cursor: 'pointer'
-                }/*,
+                }/*, // TODO remove
                 selected: {
                     fill: 'yellow'
                 },
@@ -175,7 +175,7 @@ function draw_graph(data, state) {
         .attr("width",width-margin/2)
         .attr("transform", "translate(" + margin/2 + "," + margin/2 + ")");
 
-    /*
+    /* TODO remove
     var rect = chart.append("rect")
         .attr("width", width-margin/2)
         .attr("height", height-margin/2)
@@ -209,7 +209,7 @@ function draw_graph(data, state) {
         .attr('text-anchor','middle');
 
     //d3.select(selector + ' svg g')
-    //    .attr('transform', 'translate(50, 50)');
+    //    .attr('transform', 'translate(50, 50)');  // TODO remove
 
     // BARS
     dots = chart.append('g')
@@ -231,7 +231,7 @@ function draw_graph(data, state) {
     var xlabel = chart.append('g'),
         ylabel = chart.append('g');
 
-    /*
+    /* TODO remove
     ylabel.append("text")
         .attr('class' ,'label')
         .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
@@ -274,9 +274,9 @@ function draw_graph(data, state) {
 
     zoom(d3.select("#graph"));
 
-    //test.call(zoom);
+    //test.call(zoom); // TODO remove
 
-    //alldata.call(zoom);
+    //alldata.call(zoom); // TODO remove
 
     test.transition().duration(4000).call(zoom.translate([100,0]).event);
 
@@ -312,7 +312,7 @@ function draw_graph(data, state) {
             }
             })
             .attr('onmouseover',function(d) {return "graph_war_hover("+d.id+")";})
-            //.attr('onclick',function(d,i) {return "click("+i+");render();";})
+            //.attr('onclick',function(d,i) {return "click("+i+");render();";}) // TODO remove
             .attr('x', function(d,i) {
                 var val = x( new Date(d.ending.getTime() - (d.ending.getTime()-1 - d.beginning.getTime()-1)/2) );
                 if (val >= 0 && val <= width-50) { // TODO check the correct values start x - width - end x
@@ -326,8 +326,8 @@ function draw_graph(data, state) {
             })
             .attr('font-size', function(d,i) {
                 return "12 px";
-                //return x(d.ending  - 1 - d.beginning  +1)/130 + "px" ;
-                //return 10*(x(d.ending - d.beginning)/x( d.ending  - 1 - d.beginning  +1)) + "px" ;
+                //return x(d.ending  - 1 - d.beginning  +1)/130 + "px" ; // TODO remove
+                //return 10*(x(d.ending - d.beginning)/x( d.ending  - 1 - d.beginning  +1)) + "px" ; // TODO remove
             });
 
         change_viewed(viewed);
@@ -380,6 +380,7 @@ function fill_autocomplete(data) {
         }
     });
     
+    // TODO remove
     //.data("autocomplete")._renderItem = function(ul, item) {
     //    return $("<li>").data("item.autocomplete", item).append("<a>" + item.name + "</a>").appendTo(ul);
 
@@ -506,7 +507,7 @@ function update_ranking(data, new_state, prev_state) {
         var y0 = y.domain(sorted_names)
             .copy();
 
-        /*
+        /* TODO remove
         svg.selectAll(".barinstance")
             .sort(function(a, b) { return y0(a.name) - y0(b.name); });
         */
@@ -514,9 +515,9 @@ function update_ranking(data, new_state, prev_state) {
         var transition = svg.transition().duration(750),
             delay = function(d, i) { return i * 100; };
 
-        //var selector = d3.select();
+        //var selector = d3.select();  // TODO remove
 
-        //transition.selectAll(".barinstance#i"+new_state.selection.id)
+        //transition.selectAll(".barinstance#i"+new_state.selection.id)  // TODO remove
         transition.select("rect.bar.selected")
             .delay(delay)
             .attr("width", function(d) { return x(d.nb_victims); });
@@ -554,6 +555,7 @@ function update_all(data, new_state, prev_state) {
     // TODO waarom volgende twee lijnen ook niet in update_ranking ?
     $("#i"+String(i)+" > rect").attr("class", "bar selected");
     $("#i"+String(iprev)+" > rect").attr("class", "bar");
+    // TODO all above this TODO has to move somewhere else I think...
     update_ranking(wardata, new_state, prev_state);
     update_infocard(wardata, new_state, prev_state);
     update_map(wardata, new_state, prev_state);
@@ -617,11 +619,9 @@ function map_region_click(event, code) {
 }
 
 function graph_war_hover(id) {
-    change_highlight($.grep(wardata, function(e){ return e.id == id; })[0]);
+    change_highlight($.grep(wardata, function(e){ return e.id == id - 2; })[0]); // TODO -2 is dirty hack...
 }
 
 function graph_war_click(id) {
     change_selection($.grep(wardata, function(e){ return e.id == id; })[0]);
 }
-
-
