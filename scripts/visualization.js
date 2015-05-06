@@ -29,7 +29,7 @@ function draw_ranking(data, state) {
 
         size = height / 3;
 
-    svg.append("text").attr("class", "backtext").text("TOP 12")
+    svg.append("text").attr("class", "backtext").text("TOP 10")
         .attr('x', width / 2)
         .attr('y', (height / 2) + size / 4)
         .attr("font-size", size)
@@ -434,22 +434,23 @@ function init_visualization(data) {
 function update_ranking(data, new_state, prev_state) {
     // Copy-on-write since tweens are evaluated after a delay.
     var height = $("#ranking").height(),
-        width = $("#ranking").width(),
+        width = $("#ranking").width();
 
-        svg = d3.select("#ranking svg g"),
+    var svg = d3.select("#ranking svg g");
     
-        animation = false,
+    var animation = false;
+    
+    var visible = new_state.viewed.sort(function(a, b) { return b.nb_victims - a.nb_victims; }).slice(0,10);
 
-        visible = new_state.viewed.sort(function(a, b) { return b.nb_victims - a.nb_victims; }).slice(0, 10);
-
-    if(visible.indexOf(new_state.selection) == -1 && d3.select(".barinstance#i" + new_state.selection.id).empty) {
+    if(new_state.selection.length > 0 && v.indexOf(new_state.selection[0]) == -1 && d3.select(".barinstance#i"+new_state.selection.id).empty) {
         visible.push(new_state.selection);
         animation = true;
     }
 
     var names = new Array()
-    
-    visible.forEach(function(d) {names.push(d.name)});
+    visible.forEach(function(d) {
+        names.push(d.name)
+    });
 
     var y = d3.scale.ordinal()
 		.domain(names)
@@ -474,8 +475,6 @@ function update_ranking(data, new_state, prev_state) {
         .attr("class", function(d) {
             if(d == new_state.selection) {
                 return "bar selected"
-            } else if(d== new_state.highlight) {
-                return "bar highlighted"   
             }
             else {
                 return "bar";
@@ -491,38 +490,38 @@ function update_ranking(data, new_state, prev_state) {
         })
         .attr("height", 15);
 
-        bars.append("text")
-            .attr("class","warnameText")
-            .text(function(war) {return war.name;});
+    bars.append("text")
+        .attr("class","warnameText")
+        .text(function(d) {return d.name;});
 
-        bars.append("text")
-            .attr("class","victimText")
-            .attr("x", function(war) { return x(war.nb_victims) - 50; })
-            .attr("y", 10)
-            .text(function(war) {return String(war.nb_victims);});
+    bars.append("text")
+        .attr("class","victimText")
+        .attr("x", function(d) { return x(d.nb_victims) - 50; })
+        .attr("y", 10)
+        .text(function(d) {return String(d.nb_victims);});
 
-        if(animation) {
-            var sorted_names = visible.sort(function(a, b) { return b.nb_victims - a.nb_victims; }).map(function(d) {return d.name;});
+    if(animation) {
+        var sorted_names = v.sort(function(a, b) { return b.nb_victims - a.nb_victims; }).map(function(d) {return d.name;});
 
-            //console.log(sorted_names);
+        var y0 = y.domain(sorted_names)
+            .copy();
 
-            var y0 = y.domain(sorted_names)
-                .copy();
-
-            /*
-            svg.selectAll(".barinstance")
-                .sort(function(a, b) { return y0(a.name) - y0(b.name); });
+        /*
+        svg.selectAll(".barinstance")
+            .sort(function(a, b) { return y0(a.name) - y0(b.name); });
         */
-            var transition = svg.transition().duration(750),
-                delay = function(d, i) { return i * 100; };
+        
+        var transition = svg.transition().duration(750),
+            delay = function(d, i) { return i * 100; };
 
-            //var selector = d3.select();
+        //var selector = d3.select();
 
-            //transition.selectAll(".barinstance#i"+new_state.selection.id)
-            transition.select("rect.bar.selected")
-                .delay(delay)
-                .attr("width", function(d) { return x(d.nb_victims); });
-        }
+        //transition.selectAll(".barinstance#i"+new_state.selection.id)
+        transition.select("rect.bar.selected")
+            .delay(delay)
+            .attr("width", function(d) { return x(d.nb_victims); });
+    }
+
 }
 
 function update_infocard(data, new_state, prev_state) {
