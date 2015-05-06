@@ -37,7 +37,7 @@ function draw_ranking(data, state) {
 
     var size = height /3;
 
-    svg.append("text").attr("class","backtext").text("TOP 12")
+    svg.append("text").attr("class","backtext").text("TOP 10")
         .attr('x', width/2)
         .attr('y', (height/2)+size/4)
         .attr("font-size", size)
@@ -62,11 +62,14 @@ function update_ranking(vers,prev_v) {
     console.log(vers.viewed);
     var animation = false;
 
+
     var v = vers.viewed.sort(function(a, b) { return b.nb_victims - a.nb_victims; }).slice(0,10);
 
-    console.log(vers.viewed);
 
-    if(v.indexOf(vers.selection) == -1 && d3.select(".barinstance#i"+vers.selection.id).empty) {
+
+    console.log(vers.selection);
+
+    if(vers.selection.length > 0 && v.indexOf(vers.selection[0]) == -1 && d3.select(".barinstance#i"+vers.selection.id).empty) {
         v.push(vers.selection);
         animation = true;
     }
