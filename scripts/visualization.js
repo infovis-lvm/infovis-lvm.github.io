@@ -1,23 +1,19 @@
-/**
- * Created by maxdekoninck on 27/04/15.
- */
-var wardata;
-//autocompletion selected items
-var selected = [];
+// --------------------- //
+// CONSTANTS AND GLOBALS //
+// --------------------- //
+
+var wardata,
 
 // state of the visualisation, attributes are
 // 'metric', 'startdate', 'enddate', 'selection' and 'highlight'
-var vis_state;
-
-var vis_previous_state;
+    vis_state,
+    vis_previous_state;
 
 // ------------- //
 // DRAW ELEMENTS //
 // ------------- //
 
-// draw graph with the given data, selection, highlight and metric
 function draw_ranking(data, state) {
-        //.attr("transform", "translate(" + margin/2 + "," + margin/2 + ")");
     var height = $("#ranking").height(),
         width = $("#ranking").width(),
         thisdata = data;
@@ -44,114 +40,19 @@ function draw_ranking(data, state) {
 
     var dots =  svg.append("g")
         .attr("class", "dots");
-
 }
 
-function update_ranking(new_state, prev_state) {
-    // Copy-on-write since tweens are evaluated after a delay.
-    var height = $("#ranking").height(),
-        width = $("#ranking").width(),
-
-        svg = d3.select("#ranking svg g"),
-    
-        animation = false,
-
-        visible = new_state.viewed.sort(function(a, b) { return b.nb_victims - a.nb_victims; }).slice(0, 10);
-
-    if(visible.indexOf(new_state.selection) == -1 && d3.select(".barinstance#i" + new_state.selection.id).empty) {
-        visible.push(new_state.selection);
-        animation = true;
-    }
-
-    var names = new Array()
-    
-    visible.forEach(function(d) {names.push(d.name)});
-
-    var y = d3.scale.ordinal()
-		.domain(names)
-        .rangeRoundBands([0,height],1);
-
-    var x = d3.scale.log()
-        .domain([Math.pow(10,2), d3.max(visible, function(d) { return d.nb_victims; })])
-		.range([1,width-10]);
-
-    var dots = d3.select("#ranking .dots");
-
-    dots.selectAll(".barinstance").remove();
-
-    var bars = dots.selectAll(".dots")
-        .data(visible)
-        .enter().append("g")
-        .attr("class","barinstance")
-        .attr("id",function(d) { return "i"+d.id;})
-        .attr("transform", function(d) { return "translate(1,"+y(d.name)+")"; });
-
-    bars.append("rect")
-        .attr("class", function(d) {
-            if(d == new_state.selection) {
-                return "bar selected"
-            } else if(d== new_state.highlight) {
-                return "bar highlighted"   
-            }
-            else {
-                return "bar";
-            }
-        })
-        .attr("width", function(d) {
-            if(d != new_state.selection || !animation) {
-                return x(d.nb_victims);
-            }
-            else {
-                return 0;
-            }
-        })
-        .attr("height", 15);
-
-        bars.append("text")
-            .attr("class","warnameText")
-            .text(function(war) {return war.name;});
-
-        bars.append("text")
-            .attr("class","victimText")
-            .attr("x", function(war) { return x(war.nb_victims) - 50; })
-            .attr("y", 10)
-            .text(function(war) {return String(war.nb_victims);});
-
-        if(animation) {
-            var sorted_names = visible.sort(function(a, b) { return b.nb_victims - a.nb_victims; }).map(function(d) {return d.name;});
-
-            //console.log(sorted_names);
-
-            var y0 = y.domain(sorted_names)
-                .copy();
-
-            /*
-            svg.selectAll(".barinstance")
-                .sort(function(a, b) { return y0(a.name) - y0(b.name); });
-        */
-            var transition = svg.transition().duration(750),
-                delay = function(d, i) { return i * 100; };
-
-            //var selector = d3.select();
-
-            //transition.selectAll(".barinstance#i"+new_state.selection.id)
-            transition.select("rect.bar.selected")
-                .delay(delay)
-                .attr("width", function(d) { return x(d.nb_victims); });
-        }
-}
-
-// draw the infocard with the given selection and highlight
 function draw_infocart(data, state) {
     var stroke = {width: 1};
+    
     // TODO:
     // if highlight is null:
     //      if selection is null: show empty infocard
     //      else: show selection
     // else: show highlight
 
-    var height= $("#infocard").height();
-    var width= $("#infocard").width();
+    var height= $("#infocard").height(),
+        width= $("#infocard").width();
 
     d3.select("#infocard #cardHolder").remove();
 
@@ -164,7 +65,7 @@ function draw_infocart(data, state) {
 
     if(state.selection != null && data != null) {
         
-        var war = data[state.highlight];
+        var war = data[state.highlight.id];
 
         chart = chart.append("a").attr("xlink:href", war.source);
 
@@ -215,11 +116,6 @@ function draw_infocart(data, state) {
     }
 }
 
-function update_infocard(data, state) {
-    draw_infocart(data, state);
-}
-
-// draw map with the given selection and highlight
 function draw_map(data, state) {
     // http://jvectormap.com/documentation/javascript-api/jvm-map/
     // http://jvectormap.com/maps/world/world/
@@ -250,16 +146,10 @@ function draw_map(data, state) {
             }
         });
     
-    
-    
     // TODO color selection and highlight (if not null)
-    
     // TODO link triggers to change-methods
-    
-    
 }
 
-//draw graph with options, the data, the view settings, width percentage and height percentage
 function draw_graph(data, state) {
     var divElem = $("#graph"),
         results,
@@ -279,7 +169,7 @@ function draw_graph(data, state) {
     
     $("#graph").on('click','.clickable_text',function() {
         var id = $(this).attr('id').slice(1);
-        graph_war_click($.grep(data, function(e) { return e.id == id })[0]);
+        graph_war_click(id);
     });
 
     chart = d3.select("#graph").append("svg")
@@ -311,7 +201,7 @@ function draw_graph(data, state) {
         .domain( [d3.min( data, function( d ) { return d.sterfkans_per_dag; } ), d3.max( data, function( d ) { return d.sterfkans_per_dag; } )] )
         .range( [0, height - margin] );
 
-    //names
+    // NAMES
     var namechart = chart.append( 'g' )
         .attr( 'class', 'names' );
 
@@ -326,7 +216,7 @@ function draw_graph(data, state) {
     //d3.select(selector + ' svg g')
     //    .attr('transform', 'translate(50, 50)');
 
-    // Bars
+    // BARS
     dots = chart.append('g')
         .attr('class', 'dots');
 
@@ -336,15 +226,15 @@ function draw_graph(data, state) {
         .attr("stroke-width", "4")
     ;
 
-    // Axis
+    // AXIS
     xAxis = d3.svg.axis()
         .scale(x)
         .orient("bottom")
         .tickSize(12, 1, 1)
     ;
 
-    var xlabel = chart.append('g');
-    var ylabel = chart.append('g');
+    var xlabel = chart.append('g'),
+        ylabel = chart.append('g');
 
     /*
     ylabel.append("text")
@@ -358,8 +248,7 @@ function draw_graph(data, state) {
         .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
         .attr("transform", "translate("+ (width/2) +","+(height-(margin)+50)+")")  // centre below axis
         .text("Date");
-        */
-
+    */
 
     yAxis = d3.svg.axis()
         .scale(d3.scale.log()
@@ -455,105 +344,14 @@ function draw_all(data, state) {
     draw_graph(data, state); 
 }
 
-function update_all(data, state, prev_state) {
-    //selection
-    var i = state.selection.id,
-        iprev = prev_state.selection.id;
-    if(i == iprev) {
-        //todo
-    }
-    
-    // TODO moet dit niet in de methode update_graph ?
-    $("text.clickable_text#i"+String(i)).attr("class", "clickable_text selected");
-    $("text.clickable_text#i"+String(iprev)).attr("class", "clickable_text");
-
-    //$("rect.bar").css( "fill", "red" );
-
-    //selection on ranking
-    // waarom volgende twee lijnen ook niet in update_ranking ?
-    $("#i"+String(i)+" > rect").attr("class", "bar selected");
-    $("#i"+String(iprev)+" > rect").attr("class", "bar");
-    update_ranking(state,prev_state);
-    update_infocard(wardata, state);
-}
-
 // -------------- //
 // INITIALISATION //
 // -------------- //
-function init_visualization(data) {
-    wardata = data;
-    
-    fill_autocomplete(data);
-    
-    // create initial state
-    vis_state = new Object();
-    vis_state.metric = null // TODO select initial metric
-    vis_state.startdate = d3.time.day.round(d3.time.year.offset(new Date('1820'), -1));
-    vis_state.enddate = d3.time.day.round(d3.time.year.offset(new Date('2010'), 1));
-    vis_state.selection = []; // TODO select initial selection
-    vis_state.highlight = [];
-    vis_state.viewed = [];
-    
-    // draw elements
-    draw_all(wardata, vis_state);
-}
-
-// ------------- //
-// INTERACTIVITY //
-// ------------- //
-
-// TODO will probably not be implemented
-/*
-function change_metric(metric) {
-    vis_state.metric = metric;
-    
-    //TODO update metric dropdown
-    draw_ranking(wardata, vis_state);
-    draw_graph(wardata, vis_state);
-}
-*/
-
-function change_viewed(viewed) {
-    vis_previous_state = jQuery.extend(true, {}, vis_state);
-    vis_state.viewed = viewed;
-    update_ranking(vis_state, vis_previous_state);
-    // graph is updated on its own, outside of this mechanism
-}
-
-function change_selection(selection) {
-    var prev_state = jQuery.extend(true, {}, vis_state);
-    vis_state.selection = selection;
-    
-    update_all(wardata, vis_state, prev_state);
-}
-
-function change_highlight(highlight) {
-    var prev_state = jQuery.extend(true, {}, vis_state);
-    vis_state.highlight = highlight;
-    update_all(wardata, vis_state, prev_state);
-}
-
-// EVENTS
-
-function graph_war_hover(id) {
-    change_highlight(id-2);
-}
-
-function graph_war_click(selection) {
-    change_selection(selection);
-}
-
-function map_region_hover(event, code) {
-    // console.log('hoverd over ' + code + ' on the map');
-    // TODO change highlight
-}
-
-function map_region_click(event, code) {
-    //console.log('clicked on ' + code + ' on the map');
-    // TODO change selection
-}
 
 function fill_autocomplete(data) {
+    // https://jqueryui.com/autocomplete/
+    // http://api.jqueryui.com/autocomplete/
+    
     var autocompdata = new Array();
 
     //TODO add data correct to the object name for the autocompletation and data for the    onselected func
@@ -574,10 +372,12 @@ function fill_autocomplete(data) {
             }
         }
     }
-
+    
     $("#search").autocomplete({
-    source: autocompdata,
-    select: function() { alert("test");}
+        source: autocompdata,
+        select: function(d) {
+            console.log(d);
+        }
     });
     
     //.data("autocomplete")._renderItem = function(ul, item) {
@@ -607,4 +407,214 @@ function fill_autocomplete(data) {
         })
         .render();
         */
+}
+
+function init_visualization(data) {
+    wardata = data;
+    
+    fill_autocomplete(data);
+    
+    // create initial state
+    vis_state = new Object();
+    vis_state.metric = null // TODO select initial metric
+    vis_state.startdate = d3.time.day.round(d3.time.year.offset(new Date('1820'), -1));
+    vis_state.enddate = d3.time.day.round(d3.time.year.offset(new Date('2010'), 1));
+    vis_state.selection = []; // TODO select initial selection
+    vis_state.highlight = [];
+    vis_state.viewed = [];
+    
+    // draw elements
+    draw_all(wardata, vis_state);
+}
+
+// --------------- //
+// UPDATE ELEMENTS //
+// --------------- //
+
+function update_ranking(data, new_state, prev_state) {
+    // Copy-on-write since tweens are evaluated after a delay.
+    var height = $("#ranking").height(),
+        width = $("#ranking").width(),
+
+        svg = d3.select("#ranking svg g"),
+    
+        animation = false,
+
+        visible = new_state.viewed.sort(function(a, b) { return b.nb_victims - a.nb_victims; }).slice(0, 10);
+
+    if(visible.indexOf(new_state.selection) == -1 && d3.select(".barinstance#i" + new_state.selection.id).empty) {
+        visible.push(new_state.selection);
+        animation = true;
+    }
+
+    var names = new Array()
+    
+    visible.forEach(function(d) {names.push(d.name)});
+
+    var y = d3.scale.ordinal()
+		.domain(names)
+        .rangeRoundBands([0,height],1);
+
+    var x = d3.scale.log()
+        .domain([Math.pow(10,2), d3.max(visible, function(d) { return d.nb_victims; })])
+		.range([1,width-10]);
+
+    var dots = d3.select("#ranking .dots");
+
+    dots.selectAll(".barinstance").remove();
+
+    var bars = dots.selectAll(".dots")
+        .data(visible)
+        .enter().append("g")
+        .attr("class","barinstance")
+        .attr("id",function(d) { return "i"+d.id;})
+        .attr("transform", function(d) { return "translate(1,"+y(d.name)+")"; });
+
+    bars.append("rect")
+        .attr("class", function(d) {
+            if(d == new_state.selection) {
+                return "bar selected"
+            } else if(d== new_state.highlight) {
+                return "bar highlighted"   
+            }
+            else {
+                return "bar";
+            }
+        })
+        .attr("width", function(d) {
+            if(d != new_state.selection || !animation) {
+                return x(d.nb_victims);
+            }
+            else {
+                return 0;
+            }
+        })
+        .attr("height", 15);
+
+        bars.append("text")
+            .attr("class","warnameText")
+            .text(function(war) {return war.name;});
+
+        bars.append("text")
+            .attr("class","victimText")
+            .attr("x", function(war) { return x(war.nb_victims) - 50; })
+            .attr("y", 10)
+            .text(function(war) {return String(war.nb_victims);});
+
+        if(animation) {
+            var sorted_names = visible.sort(function(a, b) { return b.nb_victims - a.nb_victims; }).map(function(d) {return d.name;});
+
+            //console.log(sorted_names);
+
+            var y0 = y.domain(sorted_names)
+                .copy();
+
+            /*
+            svg.selectAll(".barinstance")
+                .sort(function(a, b) { return y0(a.name) - y0(b.name); });
+        */
+            var transition = svg.transition().duration(750),
+                delay = function(d, i) { return i * 100; };
+
+            //var selector = d3.select();
+
+            //transition.selectAll(".barinstance#i"+new_state.selection.id)
+            transition.select("rect.bar.selected")
+                .delay(delay)
+                .attr("width", function(d) { return x(d.nb_victims); });
+        }
+}
+
+function update_infocard(data, new_state, prev_state) {
+    draw_infocart(data, new_state);
+}
+
+function update_map(data, new_state, prev_state) {
+    // TODO
+}
+
+function update_graph(data, new_state, prev_state) {
+    // TODO
+}
+
+function update_all(data, new_state, prev_state) {
+    //selection
+    var i = new_state.selection.id,
+        iprev = prev_state.selection.id;
+    if(i == iprev) {
+        //TODO
+    }
+    
+    // TODO moet dit niet in de methode update_graph ?
+    $("text.clickable_text#i"+String(i)).attr("class", "clickable_text selected");
+    $("text.clickable_text#i"+String(iprev)).attr("class", "clickable_text");
+
+    //$("rect.bar").css( "fill", "red" );
+
+    //selection on ranking
+    // TODO waarom volgende twee lijnen ook niet in update_ranking ?
+    $("#i"+String(i)+" > rect").attr("class", "bar selected");
+    $("#i"+String(iprev)+" > rect").attr("class", "bar");
+    update_ranking(wardata, new_state, prev_state);
+    update_infocard(wardata, new_state, prev_state);
+    update_map(wardata, new_state, prev_state);
+    update_graph(wardata, new_state, prev_state);
+}
+
+// ------- //
+// CHANGES //
+// ------- //
+
+// TODO will probably not be implemented
+/*
+function change_metric(metric) {
+    vis_state.metric = metric;
+    
+    //TODO update metric dropdown
+    draw_ranking(wardata, vis_state);
+    draw_graph(wardata, vis_state);
+}
+*/
+
+function change_viewed(viewed) {
+    vis_previous_state = jQuery.extend(true, {}, vis_state);
+    vis_state.viewed = viewed;
+    update_ranking(vis_state, vis_previous_state);
+    // graph is updated on its own, outside of this mechanism
+}
+
+function change_selection(selection) {
+    var prev_state = jQuery.extend(true, {}, vis_state);
+    vis_state.selection = selection;
+    
+    update_all(wardata, vis_state, prev_state);
+}
+
+function change_highlight(highlight) {
+    var prev_state = jQuery.extend(true, {}, vis_state);
+    vis_state.highlight = highlight;
+    
+    update_all(wardata, vis_state, prev_state);
+}
+
+// ------ //
+// EVENTS //
+// ------ //
+
+function graph_war_hover(id) {
+    change_highlight($.grep(wardata, function(e){ return e.id == id; })[0]);
+}
+
+function graph_war_click(id) {
+    change_selection($.grep(wardata, function(e){ return e.id == id; })[0]);
+}
+
+function map_region_hover(event, code) {
+    // console.log('hoverd over ' + code + ' on the map');
+    // TODO change highlight
+}
+
+function map_region_click(event, code) {
+    //console.log('clicked on ' + code + ' on the map');
+    // TODO change selection
 }
