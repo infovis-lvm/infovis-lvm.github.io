@@ -633,7 +633,10 @@ function change_highlight(highlight) {
 
 function mouseover(id) {
     // TODO waarvoor is deze mouseover? gebruik highlight changed
-    draw_infocart(wardata[id]);
+    console.log(id);
+    console.log($.grep(wardata, function(e){ return e.id == id; }));
+    draw_infocart($.grep(wardata, function(e){ return e.id == id; })[0]);
+
 }
 
 
