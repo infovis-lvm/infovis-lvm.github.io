@@ -598,12 +598,12 @@ function change_highlight(highlight) {
 // EVENTS //
 // ------ //
 
-function graph_war_hover(id) {
-    change_highlight($.grep(wardata, function(e){ return e.id == id; })[0]);
+function ranking_hover() {
+    // TODO change highlight
 }
 
-function graph_war_click(id) {
-    change_selection($.grep(wardata, function(e){ return e.id == id; })[0]);
+function ranking_click() {
+    // TODO change selection
 }
 
 function map_region_hover(event, code) {
@@ -615,3 +615,13 @@ function map_region_click(event, code) {
     //console.log('clicked on ' + code + ' on the map');
     // TODO change selection
 }
+
+function graph_war_hover(id) {
+    change_highlight($.grep(wardata, function(e){ return e.id == id; })[0]);
+}
+
+function graph_war_click(id) {
+    change_selection($.grep(wardata, function(e){ return e.id == id; })[0]);
+}
+
+
