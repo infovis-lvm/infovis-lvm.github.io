@@ -12,6 +12,9 @@ var vis_state;
 var vis_previous_state;
 
 
+
+
+
 // ------------- //
 // DRAW ELEMENTS //
 // ------------- //
@@ -48,15 +51,25 @@ function draw_ranking(data, state) {
 
 }
 
-function update_ranking(prev_v,vers) {
+function update_ranking(vers,prev_v) {
     // Copy-on-write since tweens are evaluated after a delay.
     var height= $("#ranking").height();
     var width= $("#ranking").width();
 
     var svg = d3.select("#ranking svg g");
 
-    var v = vers.viewed.slice(0,12);
 
+    console.log(vers.viewed);
+    var animation = false;
+
+    var v = vers.viewed.sort(function(a, b) { return b.nb_victims - a.nb_victims; }).slice(0,10);
+
+    console.log(vers.viewed);
+
+    if(v.indexOf(vers.selection) == -1 && d3.select(".barinstance#i"+vers.selection.id).empty) {
+        v.push(vers.selection);
+        animation = true;
+    }
 
     var names = new Array()
     v.forEach(function(d) {names.push(d.name)});
@@ -79,11 +92,28 @@ var bars = dots.selectAll(".dots")
     .data(v)
     .enter().append("g")
     .attr("class","barinstance")
+    .attr("id",function(d) { return "i"+d.id;})
     .attr("transform", function(d) { return "translate(1,"+y(d.name)+")"; });
 
+    console.log(vers.selection);
+
   bars.append("rect")
-      .attr("class", "bar")
-      .attr("width", function(d) { return x(d.nb_victims); })
+      .attr("class", function(d) {
+        if(d == vers.selection) {
+            return "bar selected"
+        }
+        else {
+            return "bar";
+        }
+        })
+      .attr("width", function(d) {
+        if(d != vers.selection || !animation) {
+            return x(d.nb_victims);
+        }
+        else {
+            return 0;
+        }
+       })
       .attr("height", 15);
 
 bars.append("text")
@@ -96,24 +126,31 @@ bars.append("text")
     .attr("y", 10)
     .text(function(d) {return String(d.nb_victims);});
 
-    var sorted_names = v.sort(function(a, b) { return b.nb_victims - a.nb_victims; }).map(function(d) {return d.name;});
 
-    //console.log(sorted_names);
+    if(animation) {
 
-    var y0 = y.domain(sorted_names)
-        .copy();
+        var sorted_names = v.sort(function(a, b) { return b.nb_victims - a.nb_victims; }).map(function(d) {return d.name;});
 
-    /*
-    svg.selectAll(".barinstance")
-        .sort(function(a, b) { return y0(a.name) - y0(b.name); });
-*/
-    var transition = svg.transition().duration(750),
-        delay = function(d, i) { return i * 100; };
+        //console.log(sorted_names);
 
-    transition.selectAll(".barinstance")
-        .delay(delay)
-        .attr("transform", function(d) { return "translate( 1,"+y0(d.name)+")"; });
 
+        var y0 = y.domain(sorted_names)
+            .copy();
+
+        /*
+        svg.selectAll(".barinstance")
+            .sort(function(a, b) { return y0(a.name) - y0(b.name); });
+    */
+        var transition = svg.transition().duration(750),
+            delay = function(d, i) { return i * 100; };
+
+        //var selector = d3.select();
+
+        //transition.selectAll(".barinstance#i"+vers.selection.id)
+        transition.select("rect.bar.selected")
+            .delay(delay)
+            .attr("width", function(d) { return x(d.nb_victims); });
+    }
 
 
 }
@@ -431,7 +468,7 @@ function draw_graph(data, state) {
     function render() {
         cacheScale = zoom.scale();
         dots.selectAll("line")
-            .attr( 'id', function(d,i) {return "i"+i;})
+            .attr( 'id', function(d) {return "i"+d.id;})
             .attr( 'x1', function( d, i ) { return x(d.beginning ) - 1; } )
             .attr( 'x2', function( d, i ) { return x( d.ending ) - 1; } )
             .attr( 'y1', function( d ) { return (height - margin) - y( d.sterfkans_per_dag) + 1 } )
@@ -446,9 +483,17 @@ function draw_graph(data, state) {
 
         names.selectAll("text")
             .text(function(d) {return d.name;}) //TODO add name d.name;})
-            .attr( 'class', function(d,i) {return "i"+i;})
-            .attr('onmouseover',function(d,i) {return "mouseover("+i+")";})
-            .attr('onclick',function(d,i) {return "click("+i+");render();";})
+            .attr( 'id', function(d) {return "i"+d.id;})
+            .attr("class", function(d) {
+            if(d == vis_state.selection) {
+                return "clickable_text selected"
+            }
+            else {
+                return "clickable_text";
+            }
+            })
+            .attr('onmouseover',function(d) {return "mouseover("+d.id+")";})
+            //.attr('onclick',function(d,i) {return "click("+i+");render();";})
             .attr('x', function(d,i) {
                 var val = x( new Date(d.ending.getTime() - (d.ending.getTime()-1 - d.beginning.getTime()-1)/2) );
                 if (val >= 0 && val <= width-50) { // TODO check the correct values start x - width - end x
@@ -460,24 +505,13 @@ function draw_graph(data, state) {
             .attr('y', function(d,i) {
                 return ((height - margin) - y( d.sterfkans_per_dag ) + 1);
             })
-            .attr({
-                fill: function (d, i) {
-                    if (state.highlight == d) {
-                        return "red";
-                    }
-                    else {
-                        return "rgba(80,80,80,0.5)";
-                    }
-                }
-
-            })
             .attr('font-size', function(d,i) {
                 return "12 px";
                 //return x(d.ending  - 1 - d.beginning  +1)/130 + "px" ;
                 //return 10*(x(d.ending - d.beginning)/x( d.ending  - 1 - d.beginning  +1)) + "px" ;
             });
 
-        change_viewed(vis_previous_state,vis_state);
+        change_viewed(vis_state,vis_previous_state);
 
     }
 
@@ -487,6 +521,8 @@ function draw_graph(data, state) {
 }
 
 
+
+
 function draw_all(data, state) {
     draw_ranking(data, state);
     draw_infocart(null, state);
@@ -494,11 +530,42 @@ function draw_all(data, state) {
     draw_graph(data, state); 
 }
 
+function update_all(data,state,prev_state) {
+    //selection on maingraph
+    var i = state.selection.id;
+    var iprev = prev_state.selection.id;
+
+
+    //console.log(state.selection);
+
+    //draw_graph(data, state);
+    if(i == iprev) {
+        //todo
+    }
+
+    $("text.clickable_text#i"+String(i)).attr("class", "clickable_text selected");
+    $("text.clickable_text#i"+String(iprev)).attr("class", "clickable_text");
+
+
+    //$("rect.bar").css( "fill", "red" );
+
+    //selection on ranking
+    $("#i"+String(i)+" > rect").attr("class", "bar selected");
+    $("#i"+String(iprev)+" > rect").attr("class", "bar");
+    update_ranking(state,prev_state);
+
+}
+
 // -------------- //
 // INITIALISATION //
 // -------------- //
 function initVisualization(data) {
     wardata = data;
+
+    $("#graph").on('click','.clickable_text',function() {
+        var id = $(this).attr('id').slice(1);
+        change_selection($.grep(data, function(e) { return e.id == id })[0]);
+    });
 
     // TODO remove opts mechanism once ranking is ok
 //    var start = '1820',
@@ -552,14 +619,14 @@ function change_viewed(prev_v, v) {
 }
 
 function change_selection(selection) {
+    var prev_state = jQuery.extend(true, {}, vis_state);
     vis_state.selection = selection;
     
-    draw_all(wardata, vis_state);
+    update_all(wardata, vis_state,prev_state);
 }
 
 function change_highlight(highlight) {
     vis_state.highlight = highlight;
-    
     draw_all(wardata, vis_state);
 }
 
@@ -569,11 +636,6 @@ function mouseover(id) {
     draw_infocart(wardata[id]);
 }
 
-function click(id) {
-    // TODO waarvoor is deze mouseover? gebruik highlight changed
-    vis_state.highlight = wardata[id];
-    //draw_all(wardata, vis_state);
-}
 
 function map_region_hover(event, code) {
     // console.log('hoverd over ' + code + ' on the map');
@@ -584,3 +646,5 @@ function map_region_click(event, code) {
     //console.log('clicked on ' + code + ' on the map');
     // TODO change selection
 }
+
+
