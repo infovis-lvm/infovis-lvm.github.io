@@ -166,11 +166,6 @@ function draw_graph(data, state) {
 
     var zScale = d3.scale.linear( ).domain(scaleExtent).rangeRound( [0, 1000] );
     var zSwitching = d3.scale.linear( ).domain([0,1000]).rangeRound([0,8]);
-    
-    $("#graph").on('click','.clickable_text',function() {
-        var id = $(this).attr('id').slice(1);
-        graph_war_click(id);
-    });
 
     chart = d3.select("#graph").append("svg")
         .attr("width",width)
@@ -285,6 +280,11 @@ function draw_graph(data, state) {
 
     test.transition().duration(4000).call(zoom.translate([100,0]).event);
 
+    $("#graph").on('click','.clickable_text',function() {
+        var id = $(this).attr('id').slice(1);
+        graph_war_click(id);
+    });
+    
     function render() {
         cacheScale = zoom.scale();
         dots.selectAll("line")
@@ -585,14 +585,12 @@ function change_viewed(viewed) {
 function change_selection(selection) {
     var prev_state = jQuery.extend(true, {}, vis_state);
     vis_state.selection = selection;
-    
     update_all(wardata, vis_state, prev_state);
 }
 
 function change_highlight(highlight) {
     var prev_state = jQuery.extend(true, {}, vis_state);
     vis_state.highlight = highlight;
-    
     update_all(wardata, vis_state, prev_state);
 }
 
