@@ -5,7 +5,7 @@
 var wardata,
 
 // state of the visualisation, attributes are
-// 'metric', 'startdate', 'enddate', 'selection' and 'highlight'
+// 'metric', 'startdate', 'enddate', 'selection', 'selectionType', 'highlight' and 'highlightType'
     vis_state,
     vis_previous_state;
 
@@ -123,8 +123,8 @@ function draw_map(data, state) {
     // create map
     var div = $("#worldmap"),
         map = div.vectorMap({
-            onRegionOver : map_region_hover,
-            onRegionClick : map_region_click,
+            onRegionOver : map_country_hover,
+            onRegionClick : map_country_click,
             backgroundColor : 'white',
             regionStyle : {
                 initial: {
@@ -584,44 +584,68 @@ function change_viewed(viewed) {
     // graph is updated on its own, outside of this mechanism
 }
 
-function change_selection(selection) {
-    var prev_state = jQuery.extend(true, {}, vis_state);
-    vis_state.selection = selection;
-    update_all(wardata, vis_state, prev_state);
+// id should start with a 'W' f a war should be selected, and with a 'C' if a country should be selected
+function change_selection(id) {
+    // if the selection is a war...
+    if(id.charAt(0) == 'W') {
+        id = id.substr(1, id.length - 1);
+        var selection = $.grep(wardata, function(e){ return e.id == id; })[0];
+        var prev_state = jQuery.extend(true, {}, vis_state);
+        vis_state.selection = selection;
+        vis_state.selectionType = 'W';
+        update_all(wardata, vis_state, prev_state);
+    }
+    // if the selection is a country
+    else if (id.charAt(0) == 'C') {
+        id = id.substr(1, id.length - 1);
+        console.log('select ' + getCountryName(id));
+        // TODO
+    }
 }
 
-function change_highlight(highlight) {
-    var prev_state = jQuery.extend(true, {}, vis_state);
-    vis_state.highlight = highlight;
-    update_all(wardata, vis_state, prev_state);
+// id should start with a 'W' f a war should be highlighted, and with a 'C' if a country should be highlighted
+function change_highlight(id) {
+    // if the selection is a war...
+    if(id.charAt(0) == 'W') {
+        id = id.substr(1, id.length - 1);
+        var highlight = $.grep(wardata, function(e){ return e.id == id - 2; })[0]; //TODO -2 is dirty fix
+        var prev_state = jQuery.extend(true, {}, vis_state);
+        vis_state.highlight = highlight;
+        vis_state.highlightType = 'W';
+        update_all(wardata, vis_state, prev_state);
+    }
+    // if the selection is a country
+    else if (id.charAt(0) == 'C') {
+        id = id.substr(1, id.length - 1);
+        console.log('highlight ' + getCountryName(id));
+        // TODO
+    }
 }
 
 // ------ //
 // EVENTS //
 // ------ //
 
-function ranking_hover() {
+function ranking_war_hover() {
     // TODO change highlight
 }
 
-function ranking_click() {
+function ranking_war_click() {
     // TODO change selection
 }
 
-function map_region_hover(event, code) {
-    // console.log('hoverd over ' + code + ' on the map');
-    // TODO change highlight
+function map_country_hover(event, code) {
+    change_highlight('C' + code);
 }
 
-function map_region_click(event, code) {
-    //console.log('clicked on ' + code + ' on the map');
-    // TODO change selection
+function map_country_click(event, code) {
+    change_selection('C' + code);
 }
 
 function graph_war_hover(id) {
-    change_highlight($.grep(wardata, function(e){ return e.id == id - 2; })[0]); // TODO -2 is dirty hack...
+    change_highlight('W' + id);
 }
 
 function graph_war_click(id) {
-    change_selection($.grep(wardata, function(e){ return e.id == id; })[0]);
+    change_selection('W' + id);
 }
