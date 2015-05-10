@@ -138,10 +138,10 @@ function draw_map(data, state) {
             hover: {
                 "fill-opacity": 0.8,
                 cursor: 'pointer'
-            }/*, // TODO remove
-            selected: {
-                fill: 'yellow'
             },
+            selected: {
+                fill: 'red'
+            }/*,
             selectedHover: {
             }*/
         }
