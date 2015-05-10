@@ -178,7 +178,7 @@ function getCountryName(id) {
     console.error('No country with id: ' + id);
 }
 
-function getCountryname(name) {
+function getCountryId(name) {
     if(name =="Bangladesh" )	return "BD" ;
     if(name =="Belgium" )		return "BE" ;
     if(name =="Burkina Faso" )return "BF" ;
@@ -356,4 +356,16 @@ function getCountryname(name) {
     if(name =="Qatar" )		return "QA" ;
     if(name =="Mozambique" )	return "MZ" ;
     console.error('No country with name: ' + name);
+}
+
+function getCountries(war) {
+    var countries = new Array();
+    var country;
+    for (i = 1; i < 27; i++) { 
+        country = war['involved country ' + i];
+        if(country != '1') {
+            countries.push(country);
+        } else break;
+    }
+    return countries;
 }

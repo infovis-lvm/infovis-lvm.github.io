@@ -7,7 +7,8 @@ var wardata,
 // state of the visualisation, attributes are
 // 'metric', 'startdate', 'enddate', 'selection', 'selectionType', 'highlight' and 'highlightType'
     vis_state,
-    vis_previous_state;
+    vis_previous_state,
+    map;
 
 // ------------- //
 // DRAW ELEMENTS //
@@ -121,30 +122,30 @@ function draw_map(data, state) {
     // http://jvectormap.com/maps/world/world/
     
     // create map
-    var div = $("#worldmap"),
-        map = div.vectorMap({
-            onRegionOver : map_country_hover,
-            onRegionClick : map_country_click,
-            backgroundColor : 'white',
-            regionStyle : {
-                initial: {
-                    fill: 'grey',
-                    "fill-opacity": 1,
-                    stroke: 'none',
-                    "stroke-width": 0,
-                    "stroke-opacity": 1
-                },
-                hover: {
-                    "fill-opacity": 0.8,
-                    cursor: 'pointer'
-                }/*, // TODO remove
-                selected: {
-                    fill: 'yellow'
-                },
-                selectedHover: {
-                }*/
-            }
-        });
+    map = new jvm.Map({
+        container : $("#worldmap"),
+        onRegionOver : map_country_hover,
+        onRegionClick : map_country_click,
+        backgroundColor : 'white',
+        regionStyle : {
+            initial: {
+                fill: 'grey',
+                "fill-opacity": 1,
+                stroke: 'none',
+                "stroke-width": 0,
+                "stroke-opacity": 1
+            },
+            hover: {
+                "fill-opacity": 0.8,
+                cursor: 'pointer'
+            }/*, // TODO remove
+            selected: {
+                fill: 'yellow'
+            },
+            selectedHover: {
+            }*/
+        }
+    });
     
     // TODO color selection and highlight (if not null)
     // TODO link triggers to change-methods
@@ -433,14 +434,16 @@ function init_visualization(data) {
 // --------------- //
 
 function update_ranking(data, new_state, prev_state) {
+    // TODO: both selection and highlight can be a country or a war, as indicated by the selectionType and selectionHighlight ('C' or 'W')
+    
     // Copy-on-write since tweens are evaluated after a delay.
     var height = $("#ranking").height(),
         width = $("#ranking").width();
 
     var svg = d3.select("#ranking svg g");
-    
+
     var animation = false;
-    
+
     var visible = new_state.viewed.sort(function(a, b) { return b.nb_victims - a.nb_victims; }).slice(0,10);
 
     if(new_state.selection.length > 0 && v.indexOf(new_state.selection[0]) == -1 && d3.select(".barinstance#i"+new_state.selection.id).empty) {
@@ -454,12 +457,12 @@ function update_ranking(data, new_state, prev_state) {
     });
 
     var y = d3.scale.ordinal()
-		.domain(names)
+        .domain(names)
         .rangeRoundBands([0,height],1);
 
     var x = d3.scale.log()
         .domain([Math.pow(10,2), d3.max(visible, function(d) { return d.nb_victims; })])
-		.range([1,width-10]);
+        .range([1,width-10]);
 
     var dots = d3.select("#ranking .dots");
 
@@ -511,7 +514,7 @@ function update_ranking(data, new_state, prev_state) {
         svg.selectAll(".barinstance")
             .sort(function(a, b) { return y0(a.name) - y0(b.name); });
         */
-        
+
         var transition = svg.transition().duration(750),
             delay = function(d, i) { return i * 100; };
 
@@ -522,7 +525,6 @@ function update_ranking(data, new_state, prev_state) {
             .delay(delay)
             .attr("width", function(d) { return x(d.nb_victims); });
     }
-
 }
 
 function update_infocard(data, new_state, prev_state) {
@@ -531,6 +533,17 @@ function update_infocard(data, new_state, prev_state) {
 
 function update_map(data, new_state, prev_state) {
     // TODO
+    if(new_state.selectionType == 'W') {
+        map.clearSelectedRegions();
+        var countries = getCountries(new_state.selection);
+        var id;
+        var ids = new Array();
+        countries.forEach(function highlightCountry(currentValue, index, array) {
+            id = getCountryId(currentValue);
+            ids.push(id);
+        });
+        map.setSelectedRegions(ids);
+    }
 }
 
 function update_graph(data, new_state, prev_state) {
