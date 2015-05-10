@@ -356,17 +356,17 @@ function getCountryId(name) {
     if(name =="Qatar" )		return "QA" ;
     if(name =="Mozambique" )	return "MZ" ;
     // own definitions
-    if(id =="Austria-Hungary" )	return "AT" ; // Austria instead
-    if(id =="Bosnia" )	return "BA" ; // Bosnia and Herz.
-    if(id =="Czechoslovakia" )	return "CZ" ; // Czech Rep.
-    if(id =="Democratic Republic of the Congo" )	return "CD" ;
-    if(id =="Laos" )	return "Lao" ; // Laos PDR
-    if(id =="North Korea" )	return "KP" ; // Dem. Rep. Korea
-    if(id =="South Korea" )	return "KR" ; // Korea
-    if(id =="South Vietnam" )	return "VN" ; // Vietnam
-    if(id =="United States of America" )	return "US" ; // United States
-    if(id =="USSR" )	return "RU" ; // Russia
-    if(id =="Yugoslavia" )	return "BA" ; // Bosnia and Herz.
+    if(name =="Austria-Hungary" )	return "AT" ; // Austria instead
+    if(name =="Bosnia" )	return "BA" ; // Bosnia and Herz.
+    if(name =="Czechoslovakia" )	return "CZ" ; // Czech Rep.
+    if(name =="Democratic Republic of the Congo" )	return "CD" ;
+    if(name =="Laos" )	return "Lao" ; // Laos PDR
+    if(name =="North Korea" )	return "KP" ; // Dem. Rep. Korea
+    if(name =="South Korea" )	return "KR" ; // Korea
+    if(name =="South Vietnam" )	return "VN" ; // Vietnam
+    if(name =="United States of America" )	return "US" ; // United States
+    if(name =="USSR" )	return "RU" ; // Russia
+    if(name =="Yugoslavia" )	return "BA" ; // Bosnia and Herz.
     console.error('No country with name: ' + name);
 }
 

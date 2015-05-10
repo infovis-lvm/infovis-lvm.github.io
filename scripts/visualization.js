@@ -3,12 +3,11 @@
 // --------------------- //
 
 var wardata,
-
+    map,
 // state of the visualisation, attributes are
 // 'metric', 'startdate', 'enddate', 'selection', 'selectionType', 'highlight' and 'highlightType'
     vis_state,
-    vis_previous_state,
-    map;
+    vis_previous_state;
 
 // ------------- //
 // DRAW ELEMENTS //
@@ -126,10 +125,10 @@ function draw_map(data, state) {
         container : $("#worldmap"),
         onRegionOver : map_country_hover,
         onRegionClick : map_country_click,
-        backgroundColor : 'white',
+        backgroundColor : 'white', // TODO link css color
         regionStyle : {
             initial: {
-                fill: 'grey',
+                fill: 'grey', // TODO link css color
                 "fill-opacity": 1,
                 stroke: 'none',
                 "stroke-width": 0,
@@ -140,7 +139,7 @@ function draw_map(data, state) {
                 cursor: 'pointer'
             },
             selected: {
-                fill: 'red'
+                fill: 'red' // TODO link css color
             }/*,
             selectedHover: {
             }*/
