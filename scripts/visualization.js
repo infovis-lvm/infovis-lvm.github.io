@@ -43,6 +43,8 @@ function draw_ranking(data, state) {
 }
 
 function draw_infocart(data, state) {
+    console.log(state.highlight)
+    console.log
     var stroke = {width: 1};
     
     // TODO:
@@ -65,7 +67,7 @@ function draw_infocart(data, state) {
 
     if(state.selection != null && data != null) {
         
-        var war = data[state.highlight.id];
+        var war = $.grep(wardata, function(e){ return e.id == state.highlight.id; })[0];
 
         chart = chart.append("a").attr("xlink:href", war.source);
 
@@ -285,6 +287,11 @@ function draw_graph(data, state) {
         graph_war_click(id);
     });
     
+    $("#graph").on('mouseenter','.clickable_text',function() {
+        var id = $(this).attr('id').slice(1);
+        graph_war_hover(id);
+    });
+
     function render() {
         cacheScale = zoom.scale();
         dots.selectAll("line")
@@ -311,7 +318,7 @@ function draw_graph(data, state) {
                 return "clickable_text";
             }
             })
-            .attr('onmouseover',function(d) {return "graph_war_hover("+d.id+")";})
+            //.attr('onmouseover',function(d) {return "graph_war_hover("+d.id+")";})
             //.attr('onclick',function(d,i) {return "click("+i+");render();";}) // TODO remove
             .attr('x', function(d,i) {
                 var val = x( new Date(d.ending.getTime() - (d.ending.getTime()-1 - d.beginning.getTime()-1)/2) );
@@ -618,9 +625,10 @@ function change_selection(id) {
 // id should start with a 'W' f a war should be highlighted, and with a 'C' if a country should be highlighted
 function change_highlight(id) {
     // if the selection is a war...
+    console.log(id)
     if(id.charAt(0) == 'W') {
         id = id.substr(1, id.length - 1);
-        var highlight = $.grep(wardata, function(e){ return e.id == id - 2; })[0]; //TODO -2 is dirty fix
+        var highlight = $.grep(wardata, function(e){ return e.id == id; })[0]; //TODO -2 is dirty fix
         var prev_state = jQuery.extend(true, {}, vis_state);
         vis_state.highlight = highlight;
         vis_state.highlightType = 'W';
