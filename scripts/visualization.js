@@ -20,7 +20,6 @@ function draw_ranking(data, state) {
 
     d3.select("#ranking svg").remove();
 
-    
     var svg = d3.select("#ranking")
         .append("svg")
         .attr("height", height)
@@ -40,11 +39,19 @@ function draw_ranking(data, state) {
 
     var dots =  svg.append("g")
         .attr("class", "dots");
+
+    $("#ranking").on('click','.barinstance',function() {
+        var id = $(this).attr('id').slice(1);
+        ranking_war_click(id);
+    });
+    
+    $("#ranking").on('mouseenter','.rect',function() {
+        var id = $(this).attr('id').slice(1);
+        ranking_war_hover(id);
+    });
 }
 
 function draw_infocart(data, state) {
-    console.log(state.highlight)
-    console.log
     var stroke = {width: 1};
     
     // TODO:
@@ -58,19 +65,19 @@ function draw_infocart(data, state) {
 
     d3.select("#infocard #cardHolder").remove();
 
-    var chart = d3.select("#infocard")
+    var card = d3.select("#infocard")
         .append("svg")
         .attr("id","cardHolder")
         .attr("height",width)
         .attr("width",width);
 
-    if(state.selection != null && data != null) {
+    if(state.highlight != null && data != null) {
         
         var war = $.grep(wardata, function(e){ return e.id == state.highlight.id; })[0];
 
-        chart = chart.append("a").attr("xlink:href", war.source);
+        card = card.append("a").attr("xlink:href", war.source);
 
-        var borderPath = chart
+        var borderPath = card
             .append("rect")
             .attr("id","rectangle")
             .attr("x", stroke.width/2)
@@ -81,7 +88,7 @@ function draw_infocart(data, state) {
             //.style("fill", "orange")
             //.style("stroke-width", stroke.width);
 
-        var text = chart.append("text")
+        var text = card.append("text")
             .text(war.description);
 
         d3plus.textwrap()
@@ -92,9 +99,9 @@ function draw_infocart(data, state) {
             .draw();
     }
     else {
-        chart = chart.append("a").attr("xlink:href", "http://www.wikipedia.org/");
+        card = card.append("a").attr("xlink:href", "http://www.wikipedia.org/");
 
-        var borderPath = chart
+        var borderPath = card
             .append("rect")
             .attr("id","rectangle")
             .attr("x", stroke.width/2)
@@ -105,7 +112,7 @@ function draw_infocart(data, state) {
             //.style("fill", "orange")
             //.style("stroke-width", stroke.width);
 
-        var text = chart.append("text")
+        var text = card.append("text")
             .text("Select a war");
 
         d3plus.textwrap()
@@ -523,17 +530,6 @@ function update_all(data, new_state, prev_state) {
 // CHANGES //
 // ------- //
 
-// TODO will probably not be implemented
-/*
-function change_metric(metric) {
-    vis_state.metric = metric;
-    
-    //TODO update metric dropdown
-    draw_ranking(wardata, vis_state);
-    draw_graph(wardata, vis_state);
-}
-*/
-
 function change_viewed(viewed) {
     vis_previous_state = jQuery.extend(true, {}, vis_state);
     vis_state.viewed = viewed;
@@ -555,7 +551,6 @@ function change_selection(id) {
     // if the selection is a country
     else if (id.charAt(0) == 'C') {
         id = id.substr(1, id.length - 1);
-        console.log('select ' + getCountryName(id));
         // TODO
     }
 }
@@ -563,7 +558,6 @@ function change_selection(id) {
 // id should start with a 'W' f a war should be highlighted, and with a 'C' if a country should be highlighted
 function change_highlight(id) {
     // if the selection is a war...
-    console.log(id)
     if(id.charAt(0) == 'W') {
         id = id.substr(1, id.length - 1);
         var highlight = $.grep(wardata, function(e){ return e.id == id; })[0]; //TODO -2 is dirty fix
@@ -575,7 +569,6 @@ function change_highlight(id) {
     // if the selection is a country
     else if (id.charAt(0) == 'C') {
         id = id.substr(1, id.length - 1);
-        console.log('highlight ' + getCountryName(id));
         // TODO
     }
 }
@@ -584,12 +577,12 @@ function change_highlight(id) {
 // EVENTS //
 // ------ //
 
-function ranking_war_hover() {
-    // TODO change highlight
+function ranking_war_hover(id) {
+    change_highlight('W' + id);
 }
 
-function ranking_war_click() {
-    // TODO change selection
+function ranking_war_click(id) {
+    change_selection('W' + id);
 }
 
 function map_country_hover(event, code) {
