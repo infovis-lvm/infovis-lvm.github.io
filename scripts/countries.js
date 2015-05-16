@@ -179,19 +179,34 @@ function getCountryName(id) {
 }
 
 function getCountryId(name) {
+    // own definitions
+    if(name =="Austria-Hungary" )	return "AT" ; // Austria instead
+    if(name =="Bosnia" )	return "BA" ; // Bosnia and Herz.
+    if(name =="Czechoslovakia" )	return "CZ" ; // Czech Rep.
+    if(name =="Democratic Republic of the Congo" )	return "CD" ;
+    if(name =="Laos" )	return "Lao" ; // Laos PDR
+    if(name =="North Korea" )	return "KP" ; // Dem. Rep. Korea
+    if(name =="South Korea" )	return "KR" ; // Korea
+    if(name =="South Vietnam" )	return "VN" ; // Vietnam
+    if(name =="United States of America" )	return "US" ; // United States
+    if(name =="USSR" )	return "RU" ; // Russia
+    if(name =="Yugoslavia" )	return "BA" ; // Bosnia and Herz.
+    if(name =="Jordan\n" )	return "JO" ; // Jordan with newline
+    if(name =="Yemen\n" )	return "YE" ; // Yemen with newline
+    // definitions of map
     if(name =="Bangladesh" )	return "BD" ;
     if(name =="Belgium" )		return "BE" ;
-    if(name =="Burkina Faso" )return "BF" ;
-    if(name =="Bulgaria" )	return "BG" ;
+    if(name =="Burkina Faso" )  return "BF" ;
+    if(name =="Bulgaria" )	     return "BG" ;
     if(name =="Bosnia and Herz." )return "BA" ;
     if(name =="Brunei" )		return "BN" ;
     if(name =="Bolivia" )		return "BO" ;
-    if(name =="Japan" )		return "JP" ;
+    if(name =="Japan" )		    return "JP" ;
     if(name =="Burundi" )		return "BI" ;
-    if(name =="Benin" )		return "BJ" ;
+    if(name =="Benin" )		    return "BJ" ;
     if(name =="Bhutan" )		return "BT" ;
     if(name =="Jamaica" )		return "JM" ;
-    if(name =="Botswana" )	return "BW" ;
+    if(name =="Botswana" )	    return "BW" ;
     if(name =="Brazil" )		return "BR" ;
     if(name =="Bahamas" )		return "BS" ;
     if(name =="Belarus" )		return "BY" ;
@@ -199,29 +214,29 @@ function getCountryId(name) {
     if(name =="Russia" )		return "RU" ;
     if(name =="Rwanda" )		return "RW" ;
     if(name =="Serbia" )		return "RS" ;
-    if(name =="Lithuania" )	return "LT" ;
+    if(name =="Lithuania" )	    return "LT" ;
     if(name =="Luxembourg" )	return "LU" ;
     if(name =="Liberia" )		return "LR" ;
     if(name =="Romania" )		return "RO" ;
-    if(name =="Guinea-Bissau")return "GW" ;
-    if(name =="Guatemala" )	return "GT" ;
+    if(name =="Guinea-Bissau")  return "GW" ;
+    if(name =="Guatemala" )	    return "GT" ;
     if(name =="Greece" )		return "GR" ;
     if(name =="Eq. Guinea" )	return "GQ" ;
     if(name =="Guyana" )		return "GY" ;
     if(name =="Georgia" )		return "GE" ;
-    if(name =="United Kingdom" )	return "GB" ;
-    if(name =="Gabon" )		return "GA" ;
+    if(name =="United Kingdom" )return "GB" ;
+    if(name =="Gabon" )		    return "GA" ;
     if(name =="Guinea" )		return "GN" ;
     if(name =="Gambia" )		return "GM" ;
-    if(name =="Greenland" )	return "GL" ;
+    if(name =="Greenland" )	    return "GL" ;
     if(name =="Kuwait" )		return "KW" ;
-    if(name =="Ghana" )		return "GH" ;
-    if(name =="Oman" )		return "OM" ;
+    if(name =="Ghana" )		    return "GH" ;
+    if(name =="Oman" )		    return "OM" ;
     if(name =="Somaliland" )	return "_1" ;
     if(name =="Kosovo" )		return "_0" ;
     if(name =="Jordan" )		return "JO" ;
     if(name =="Croatia" )		return "HR" ;
-    if(name =="Haiti" )		return "HT" ;
+    if(name =="Haiti" )		    return "HT" ;
     if(name =="Hungary" )		return "HU" ;
     if(name =="Honduras" )	return "HN" ;
     if(name =="Puerto Rico" )	return "PR" ;
@@ -355,19 +370,8 @@ function getCountryId(name) {
     if(name =="Ukraine" )		return "UA" ;
     if(name =="Qatar" )		return "QA" ;
     if(name =="Mozambique" )	return "MZ" ;
-    // own definitions
-    if(name =="Austria-Hungary" )	return "AT" ; // Austria instead
-    if(name =="Bosnia" )	return "BA" ; // Bosnia and Herz.
-    if(name =="Czechoslovakia" )	return "CZ" ; // Czech Rep.
-    if(name =="Democratic Republic of the Congo" )	return "CD" ;
-    if(name =="Laos" )	return "Lao" ; // Laos PDR
-    if(name =="North Korea" )	return "KP" ; // Dem. Rep. Korea
-    if(name =="South Korea" )	return "KR" ; // Korea
-    if(name =="South Vietnam" )	return "VN" ; // Vietnam
-    if(name =="United States of America" )	return "US" ; // United States
-    if(name =="USSR" )	return "RU" ; // Russia
-    if(name =="Yugoslavia" )	return "BA" ; // Bosnia and Herz.
-    console.error('No country with name: ' + name);
+    
+    console.error('No country with name: \'' + name + '\'');
 }
 
 function getCountries(war) {
@@ -380,4 +384,17 @@ function getCountries(war) {
         } else break;
     }
     return countries;
+}
+
+function getWars(id) {
+    var wars = new Array();
+    wardata.forEach(function(war, index, array) {
+        if(getCountries(war).some(function(country, index, array) {
+            return getCountryId(country) == id;
+        })) {
+            wars.push(war);
+        }
+    });
+    console.log(wars);
+    return wars;
 }

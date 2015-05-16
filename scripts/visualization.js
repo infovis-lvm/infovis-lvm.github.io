@@ -71,7 +71,9 @@ function draw_infocart(data, state) {
         .attr("height",width)
         .attr("width",width);
 
-    if(state.highlight != null && data != null) {
+    if(state.selectionType == 'W'
+       && state.highlight != null
+       && data != null) {
         
         var war = $.grep(wardata, function(e){ return e.id == state.highlight.id; })[0];
 
@@ -97,6 +99,9 @@ function draw_infocart(data, state) {
             .size([7, 20])
             .resize(true)
             .draw();
+    }
+    else if(state.selectionType == 'C') {
+        // TODO what if selection is a country?
     }
     else {
         card = card.append("a").attr("xlink:href", "http://www.wikipedia.org/");
@@ -385,8 +390,6 @@ function init_visualization(data) {
 // --------------- //
 
 function update_ranking(data, new_state, prev_state) {
-    // TODO: both selection and highlight can be a country or a war, as indicated by the selectionType and selectionHighlight ('C' or 'W')
-    
     // Copy-on-write since tweens are evaluated after a delay.
     var height = $("#ranking").height(),
         width = $("#ranking").width();
@@ -397,7 +400,7 @@ function update_ranking(data, new_state, prev_state) {
 
     var visible = new_state.viewed.sort(function(a, b) { return b.nb_victims - a.nb_victims; }).slice(0,10);
 
-    if(new_state.selection.length > 0 && v.indexOf(new_state.selection[0]) == -1 && d3.select(".barinstance#i"+new_state.selection.id).empty) {
+    if(new_state.selection.length > 0 && visible.indexOf(new_state.selection[0]) == -1 && d3.select(".barinstance#i"+new_state.selection.id).empty)     {
         visible.push(new_state.selection);
         animation = true;
     }
@@ -425,11 +428,14 @@ function update_ranking(data, new_state, prev_state) {
         .attr("class","barinstance")
         .attr("id",function(d) { return "i"+d.id;})
         .attr("transform", function(d) { return "translate(1,"+y(d.name)+")"; });
-
+    
     bars.append("rect")
         .attr("class", function(d) {
-            if(d == new_state.selection) {
+            if(new_state.selectionType == 'W' && d == new_state.selection) {
                 return "bar selected"
+            }
+            else if(new_state.selectionType == 'C') {
+                return "bar"; // TODO what if country selected?
             }
             else {
                 return "bar";
@@ -456,7 +462,7 @@ function update_ranking(data, new_state, prev_state) {
         .text(function(d) {return String(d.nb_victims);});
 
     if(animation) {
-        var sorted_names = v.sort(function(a, b) { return b.nb_victims - a.nb_victims; }).map(function(d) {return d.name;});
+        var sorted_names = visible.sort(function(a, b) { return b.nb_victims - a.nb_victims; }).map(function(d) {return d.name;});
 
         var y0 = y.domain(sorted_names)
             .copy();
@@ -483,22 +489,27 @@ function update_infocard(data, new_state, prev_state) {
 }
 
 function update_map(data, new_state, prev_state) {
-    // TODO
+    map.clearSelectedRegions();
+    var ids = new Array();
     if(new_state.selectionType == 'W') {
-        map.clearSelectedRegions();
         var countries = getCountries(new_state.selection);
         var id;
-        var ids = new Array();
         countries.forEach(function highlightCountry(currentValue, index, array) {
             id = getCountryId(currentValue);
             ids.push(id);
         });
-        map.setSelectedRegions(ids);
+    } else if(new_state.selectionType == 'C') {
+        ids.push(new_state.selection);
     }
+    map.setSelectedRegions(ids);
 }
 
 function update_graph(data, new_state, prev_state) {
-    // TODO
+    if(new_state.selectionType == 'W') {
+        // other mechanism
+    } else if(new_state.selectionType == 'C') {
+        // TODO what if selection is a country?
+    }
 }
 
 function update_all(data, new_state, prev_state) {
@@ -551,7 +562,10 @@ function change_selection(id) {
     // if the selection is a country
     else if (id.charAt(0) == 'C') {
         id = id.substr(1, id.length - 1);
-        // TODO
+        var prev_state = jQuery.extend(true, {}, vis_state);
+        vis_state.selection = id;
+        vis_state.selectionType = 'C';
+        update_all(wardata, vis_state, prev_state);
     }
 }
 
