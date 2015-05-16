@@ -162,9 +162,8 @@ function draw_graph(data, state) {
         x, y,
         width = divElem.width(),
         xAxis, yAxis,
-        zoom = 40
-    ;
-    var scaleExtent = [ 1, 200 ];
+        zoom = 40,
+        scaleExtent = [ 1, 200 ];
 
     var zScale = d3.scale.linear( ).domain(scaleExtent).rangeRound( [0, 1000] );
     var zSwitching = d3.scale.linear( ).domain([0,1000]).rangeRound([0,8]);
@@ -348,7 +347,6 @@ function draw_all(data, state) {
 // -------------- //
 // INITIALISATION //
 // -------------- //
-
 
 function init_visualization(data) {
     wardata = data;
@@ -537,44 +535,38 @@ function change_viewed(viewed) {
 
 // id should start with a 'W' f a war should be selected, and with a 'C' if a country should be selected
 function change_selection(id) {
+        var prev_state = jQuery.extend(true, {}, vis_state);
     // if the selection is a war...
     if(id.charAt(0) == 'W') {
         id = id.substr(1, id.length - 1);
-        var selection = $.grep(wardata, function(e){ return e.id == id; })[0];
-        var prev_state = jQuery.extend(true, {}, vis_state);
-        vis_state.selection = selection;
+        vis_state.selection = $.grep(wardata, function(e){ return e.id == id; })[0];
         vis_state.selectionType = 'W';
-        update_all(wardata, vis_state, prev_state);
     }
     // if the selection is a country
     else if (id.charAt(0) == 'C') {
         id = id.substr(1, id.length - 1);
-        var prev_state = jQuery.extend(true, {}, vis_state);
         vis_state.selection = id;
         vis_state.selectionType = 'C';
-        update_all(wardata, vis_state, prev_state);
     }
+    update_all(wardata, vis_state, prev_state);
 }
 
 // id should start with a 'W' f a war should be highlighted, and with a 'C' if a country should be highlighted
 function change_highlight(id) {
+    var prev_state = jQuery.extend(true, {}, vis_state);
     // if the highlight is a war...
     if(id.charAt(0) == 'W') {
         id = id.substr(1, id.length - 1);
-        var highlight = $.grep(wardata, function(e){ return e.id == id; })[0];
-        var prev_state = jQuery.extend(true, {}, vis_state);
-        vis_state.highlight = highlight;
+        vis_state.highlight = $.grep(wardata, function(e){ return e.id == id; })[0];
         vis_state.highlightType = 'W';
-        update_all(wardata, vis_state, prev_state);
     }
     // if the highlight is a country
     else if (id.charAt(0) == 'C') {
         id = id.substr(1, id.length - 1);
-        var prev_state = jQuery.extend(true, {}, vis_state);
         vis_state.highlight = id;
         vis_state.highlightType = 'C';
-        update_all(wardata, vis_state, prev_state);
     }
+    update_all(wardata, vis_state, prev_state);
 }
 
 // ------ //
