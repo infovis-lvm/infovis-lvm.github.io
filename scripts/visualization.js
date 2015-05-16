@@ -70,12 +70,11 @@ function draw_infocart(data, state) {
         .attr("height",width)
         .attr("width",width);
 
-    if(state.highlightType == 'W'
-       && state.highlight != undefined
-       && state.highlight != null
+    if(state.selectionType == 'W'
+       && state.selection != null
        && data != null) {
         
-        var war = getWar(data, state.highlight.id);
+        var war = getWar(data, state.selection.id);
 
         card = card.append("a").attr("xlink:href", war.source);
 
@@ -97,10 +96,10 @@ function draw_infocart(data, state) {
             .size([7, 20])
             .resize(true)
             .draw();
-    }/*
+    }
     else if(state.selectionType == 'C') {
         // TODO SELECTION_COUNTRY what if selection is a country?
-    }*/
+    }
     else {
         card = card.append("a").attr("xlink:href", "http://www.wikipedia.org/");
 
@@ -583,7 +582,7 @@ function change_highlight(id) {
 // ------ //
 
 function ranking_war_hover(id) {
-    change_highlight('W' + id);
+    //change_highlight('W' + id);
 }
 
 function ranking_war_click(id) {
@@ -591,7 +590,7 @@ function ranking_war_click(id) {
 }
 
 function map_country_hover(event, code) {
-    change_highlight('C' + code);
+    //change_highlight('C' + code);
 }
 
 function map_country_click(event, code) {
@@ -599,7 +598,7 @@ function map_country_click(event, code) {
 }
 
 function graph_war_hover(id) {
-    change_highlight('W' + id);
+    //change_highlight('W' + id);
 }
 
 function graph_war_click(id) {
