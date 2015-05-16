@@ -186,7 +186,7 @@ function draw_graph(data, state) {
             .range( [0, width ] );
     }
 
-    y = d3.scale.log()
+    y = d3.scale.linear()
         .domain( [d3.min( data, function( d ) { return d.sterfkans_per_dag; } ), d3.max( data, function( d ) { return d.sterfkans_per_dag; } )] )
         .range( [0, height - margin] );
 
@@ -222,17 +222,17 @@ function draw_graph(data, state) {
     var xlabel = chart.append('g'),
         ylabel = chart.append('g');
 
-    var test = ylabel.append("text")
+    var ylabel = ylabel.append("text")
             .attr('class' ,'label')
         .attr("text-anchor", "left")  // this makes it easy to centre the text as the transform is applied to the anchor
         .attr("transform", "translate("+ (-25) +","+(-30)+")");  // text is drawn off the screen top left, move down and out and rotate
         //.text("average daily chance of dying [consecutive head-throws]");
 
-    test.append('tspan')
+    ylabel.append('tspan')
         .text("average daily chance of dying")
         .attr('x', 0)
         .attr('dy', '0');
-    test.append('tspan')
+    ylabel.append('tspan')
         .text("[consecutive head-throws]")
         .attr('x', 10)
         .attr('dy', '20');
@@ -251,10 +251,10 @@ function draw_graph(data, state) {
     */
 
     yAxis = d3.svg.axis()
-        .scale(d3.scale.log()
+        .scale(d3.scale.linear()
             .domain( [d3.min( data, function( d ) { return d.sterfkans_per_dag ; } ), d3.max( data, function( d ) { return d.sterfkans_per_dag ; } )] ).rangeRound( [height - margin, 0] ))
         .tickSize(6, 3, 1)
-        .ticks(20,",.0e")
+        //.ticks(10,",.0e")
         .orient('left');
 
     chart.append('g')
