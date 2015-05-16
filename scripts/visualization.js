@@ -223,12 +223,26 @@ function draw_graph(data, state) {
     var xlabel = chart.append('g'),
         ylabel = chart.append('g');
 
+    var test = ylabel.append("text")
+            .attr('class' ,'label')
+        .attr("text-anchor", "left")  // this makes it easy to centre the text as the transform is applied to the anchor
+        .attr("transform", "translate("+ (-25) +","+(-30)+")");  // text is drawn off the screen top left, move down and out and rotate
+        //.text("average daily chance of dying [consecutive head-throws]");
+
+    test.append('tspan')
+        .text("average daily chance of dying")
+        .attr('x', 0)
+        .attr('dy', '0');
+    test.append('tspan')
+        .text("[consecutive head-throws]")
+        .attr('x', 10)
+        .attr('dy', '20');
+
+
+    //test.append("tspan").text(selections[0]);
     /* TODO AXIS_LABELS
-    ylabel.append("text")
-        .attr('class' ,'label')
-        .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
-        .attr("transform", "translate("+ (30) +","+(-20)+")")  // text is drawn off the screen top left, move down and out and rotate
-        .text("sterfkans per dag");
+
+
 
     xlabel.append("text")
         .attr('class' ,'label')
