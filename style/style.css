@@ -8,8 +8,6 @@
     border-bottom-color:  rgba(0,0,0,0.1);
 }
 
-
-
 /* GRAPH */
 
 #graph {
@@ -67,6 +65,10 @@
 #ranking .dots rect {
     opacity: 0.3;
     cursor: pointer;
+}
+
+.bar.selected{
+    fill:red
 }
 
 .backtext {
