@@ -10,6 +10,14 @@ text.label {
 
 */
 
+.clickable_text.selected {
+    fill :red;
+}
+
+.timeline.selected {
+    stroke: red;
+}
+
 .clickable_text {
     fill :  rgba(80,80,80,0.5);
     cursor: pointer;
@@ -30,9 +38,7 @@ text.label {
     background-color: white;
 }
 
-.selected {
-    fill :red;
-}
+
 
 .dots line {
     stroke : #700800;
@@ -87,6 +93,8 @@ rect#rectangle {
     fill: #FFFFFF;
     fill-opacity: 0.1;
 }
+
+
 
 
 

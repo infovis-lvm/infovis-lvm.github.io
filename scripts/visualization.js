@@ -27,7 +27,7 @@ function draw_ranking(data, state) {
 
         size = width / 10;
 
-    svg.append("text").attr("class", "backtext").text("Amount of Deaths")
+    svg.append("text").attr("class", "backtext").text("Casualties")
         .attr('x', width / 2)
         .attr('y', (height / 2) + size / 4)
         .attr("font-size", size)
@@ -286,6 +286,14 @@ function draw_graph(data, state) {
         cacheScale = zoom.scale();
         dots.selectAll("line")
             .attr( 'id', function(d) {return "i"+d.id;})
+            .attr( 'class', function(d) {
+                if(d == vis_state.selection) {
+                    return "timeline selected"
+                }
+                else {
+                    return "timeline";
+                }
+            })
             .attr( 'x1', function( d, i ) { return x(d.beginning ) - 1; } )
             .attr( 'x2', function( d, i ) { return x( d.ending ) - 1; } )
             .attr( 'y1', function( d ) { return (height - margin) - y( d.sterfkans_per_dag) + 1 } )
@@ -486,20 +494,24 @@ function update_graph(data, new_state, prev_state) {
     if(prev_state.selectionType == 'W'
        && prev_state.selection != null) {
         $("text.clickable_text#i"+String(prev_state.selection.id)).attr("class", "clickable_text");
+        $("line.timeline#i"+String(new_state.selection.id)).attr("class", "timeline selected");
     } else if(prev_state.selectionType == 'C') {
         var wars = getWars(prev_state.selection);
         wars.forEach(function(war, array, index) {
             $("text.clickable_text#i"+String(war.id)).attr("class", "clickable_text");
+            $("line.timeline#i"+String(new_state.selection.id)).attr("class", "timeline selected");
         });
     }
     // new selection
     if(new_state.selection == null) return;
     if(new_state.selectionType == 'W') {
         $("text.clickable_text#i"+String(new_state.selection.id)).attr("class", "clickable_text selected");
+        $("line.timeline#i"+String(new_state.selection.id)).attr("class", "timeline selected");
     } else if(new_state.selectionType == 'C') {
         var wars = getWars(new_state.selection);
         wars.forEach(function(war, array, index) {
             $("text.clickable_text#i"+String(war.id)).attr("class", "clickable_text selected");
+            $("line.timeline#i"+String(new_state.selection.id)).attr("class", "timeline selected");
         });
     }
 }
