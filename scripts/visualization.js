@@ -237,19 +237,6 @@ function draw_graph(data, state) {
         .attr('x', 10)
         .attr('dy', '20');
 
-
-    //test.append("tspan").text(selections[0]);
-    /* TODO AXIS_LABELS
-
-
-
-    xlabel.append("text")
-        .attr('class' ,'label')
-        .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
-        .attr("transform", "translate("+ (width/2) +","+(height-(margin)+50)+")")  // centre below axis
-        .text("Date");
-    */
-
     yAxis = d3.svg.axis()
         .scale(d3.scale.linear()
             .domain( [d3.min( data, function( d ) { return d.sterfkans_per_dag ; } ), d3.max( data, function( d ) { return d.sterfkans_per_dag ; } )] ).rangeRound( [height - margin, 0] ))
@@ -396,7 +383,6 @@ function update_ranking(data, new_state, prev_state) {
 
     if(new_state.selectionType == 'W'
        && new_state.selection != null
-       && new_state.selection != undefined
        && visible.indexOf(new_state.selection) == -1
        && d3.select(".barinstance#i" + new_state.selection.id).empty) {
         visible.push(new_state.selection);
@@ -506,12 +492,12 @@ function update_graph(data, new_state, prev_state) {
     if(prev_state.selectionType == 'W'
        && prev_state.selection != null) {
         $("text.clickable_text#i"+String(prev_state.selection.id)).attr("class", "clickable_text");
-        $("line.timeline#i"+String(new_state.selection.id)).attr("class", "timeline selected");
+        $("line.timeline#i"+String(prev_state.selection.id)).attr("class", ".dots line");
     } else if(prev_state.selectionType == 'C') {
         var wars = getWars(prev_state.selection);
         wars.forEach(function(war, array, index) {
             $("text.clickable_text#i"+String(war.id)).attr("class", "clickable_text");
-            $("line.timeline#i"+String(new_state.selection.id)).attr("class", "timeline selected");
+            $("line.timeline#i"+String(prev_state.selection.id)).attr("class", ".dots line");
         });
     }
     // new selection
