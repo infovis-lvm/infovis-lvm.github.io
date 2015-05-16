@@ -75,7 +75,7 @@ function draw_infocart(data, state) {
        && state.highlight != null
        && data != null) {
         
-        var war = $.grep(data, function(e){ return e.id == state.highlight.id; })[0];
+        var war = getWar(data, state.highlight.id);
 
         card = card.append("a").attr("xlink:href", war.source);
 
@@ -545,7 +545,7 @@ function change_selection(id) {
     // if the selection is a war...
     if(id.charAt(0) == 'W') {
         id = id.substr(1, id.length - 1);
-        vis_state.selection = $.grep(wardata, function(e){ return e.id == id; })[0];
+        vis_state.selection = getWar(wardata, id);
         vis_state.selectionType = 'W';
     }
     // if the selection is a country
@@ -563,7 +563,7 @@ function change_highlight(id) {
     // if the highlight is a war...
     if(id.charAt(0) == 'W') {
         id = id.substr(1, id.length - 1);
-        vis_state.highlight = $.grep(wardata, function(e){ return e.id == id; })[0];
+        vis_state.highlight = getWar(wardata, id);
         vis_state.highlightType = 'W';
     }
     // if the highlight is a country
@@ -601,4 +601,12 @@ function graph_war_hover(id) {
 
 function graph_war_click(id) {
     change_selection('W' + id);
+}
+
+// ----- //
+// UTILS //
+// ----- //
+
+function getWar(data, id) {
+    return $.grep(data, function(e){ return e.id == id; })[0];
 }
