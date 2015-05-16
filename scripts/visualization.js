@@ -112,12 +112,14 @@ function draw_infocart(data, state) {
             .attr("width", $("#infocard").width()-stroke.width);
 
         var text = card.append("text")
-            .text("Select a war");
+            .attr('text-anchor','middle')
+            .attr('fill','red')
+            .text("Hover over a war in the graph. You can zoom in and slide.");
 
         d3plus.textwrap()
             .container(text)
             .padding(10)
-            .size([7, 10])
+            .size([6, 20])
             .resize(true)
             .draw();
     }
