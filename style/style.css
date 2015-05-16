@@ -47,7 +47,7 @@ text.label {
     stroke: red;
 }
 
-#ranking text.warnameText  { font-family: sans-serif; font-size: 10px; fill:rgba(80, 80, 80,0.6) }
+#ranking text.warnameText  { font-family: sans-serif; font-size: 10px; fill:#FFFFFF }
 #ranking text.victimText  { font-family: sans-serif; font-size: 10px; fill:#FFFFFF }
 #ranking .dots rect {
     opacity: 0.3;
@@ -62,7 +62,7 @@ text.label {
 */
 
 .backtext {
-    font-family: sans-serif;  fill:rgba(80, 80, 80,0.1);
+    font-family: sans-serif;  fill:rgba(100, 100, 100,0.3);
 }
 
 ul.ui-autocomplete {

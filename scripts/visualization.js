@@ -25,14 +25,14 @@ function draw_ranking(data, state) {
         .attr("width", width)
         .append("g"),
 
-        size = height / 3;
+        size = width / 10;
 
-    svg.append("text").attr("class", "backtext").text("TOP 10")
+    svg.append("text").attr("class", "backtext").text("Amount of Deaths")
         .attr('x', width / 2)
         .attr('y', (height / 2) + size / 4)
         .attr("font-size", size)
         .attr("text-anchor", "middle")
-        .attr("text-height", size / 2)
+        .attr("text-height", size / 4)
         .attr('width', width)
         .attr('height', height);
 
@@ -434,6 +434,7 @@ function update_ranking(data, new_state, prev_state) {
 
     bars.append("text")
         .attr("class","warnameText")
+        .attr("y", 10)
         .text(function(d) {return d.name;});
 
     bars.append("text")
