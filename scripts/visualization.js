@@ -258,12 +258,12 @@ function draw_graph(data, state) {
         .orient('left');
 
     chart.append('g')
-        .attr('class', 'x axis')
+        .attr('class', 'x_axis')
         .attr('width',width-margin)
         .attr('transform', 'translate(0, ' + (height - margin) + ')');
 
     chart.append('g')
-        .attr('class', 'y axis');
+        .attr('class', 'y_axis');
 
     var zoom = d3.behavior.zoom()
         .x(x)
@@ -313,8 +313,8 @@ function draw_graph(data, state) {
             .attr( 'y2', function( d ) { return (height - margin) - y( d.sterfkans_per_dag) + 1 } )
         ;
         xAxis.scale(x);
-        chart.select(".x.axis").call(xAxis);
-        chart.select(".y.axis").call(yAxis);
+        chart.select(".x_axis").call(xAxis);
+        chart.select(".y_axis").call(yAxis);
         
         var viewed = new Array();
 
