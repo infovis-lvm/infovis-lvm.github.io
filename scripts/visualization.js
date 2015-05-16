@@ -498,12 +498,13 @@ function update_graph(data, new_state, prev_state) {
     if(prev_state.selectionType == 'W'
        && prev_state.selection != null) {
         $("text.clickable_text#i"+String(prev_state.selection.id)).attr("class", "clickable_text");
-        $("line.timeline#i"+String(prev_state.selection.id)).attr("class", ".dots line");
-    } else if(prev_state.selectionType == 'C') {
+        $("line.timeline#i"+String(prev_state.selection.id)).attr("class", "timeline");
+    }
+    else if(prev_state.selectionType == 'C') {
         var wars = getWars(prev_state.selection);
         wars.forEach(function(war, array, index) {
             $("text.clickable_text#i"+String(war.id)).attr("class", "clickable_text");
-            $("line.timeline#i"+String(war.id)).attr("class", ".dots line");
+            $("line.timeline#i"+String(war.id)).attr("class", "timeline");
         });
     }
     // new selection
@@ -511,7 +512,8 @@ function update_graph(data, new_state, prev_state) {
     if(new_state.selectionType == 'W') {
         $("text.clickable_text#i"+String(new_state.selection.id)).attr("class", "clickable_text selected");
         $("line.timeline#i"+String(new_state.selection.id)).attr("class", "timeline selected");
-    } else if(new_state.selectionType == 'C') {
+    }
+    else if(new_state.selectionType == 'C') {
         var wars = getWars(new_state.selection);
         wars.forEach(function(war, array, index) {
             $("text.clickable_text#i"+String(war.id)).attr("class", "clickable_text selected");
