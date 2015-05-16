@@ -311,13 +311,13 @@ function draw_graph(data, state) {
             .text(function(d) {return d.name;})
             .attr( 'id', function(d) {return "i"+d.id;})
             .attr("class", function(d) {
-            if(d == vis_state.selection) {
-                viewed.push(d)
-                return "clickable_text selected"
-            }
-            else {
-                return "clickable_text";
-            }
+                if(d == vis_state.selection) {
+                    viewed.push(d)
+                    return "clickable_text selected"
+                }
+                else {
+                    return "clickable_text";
+                }
             })
             .attr('x', function(d,i) {
                 var val = x( new Date(d.ending.getTime() - (d.ending.getTime()-1 - d.beginning.getTime()-1)/2) );
@@ -388,7 +388,11 @@ function update_ranking(data, new_state, prev_state) {
        && visible.indexOf(new_state.selection) == -1
        && d3.select(".barinstance#i" + new_state.selection.id).empty) {
         visible.push(new_state.selection);
-        animation = new_state.selection != prev_state.selection;
+        if(prev_state.selection != undefined) {
+            animation = new_state.selection != prev_state.selection;
+        } else {
+            animation = false;
+        }
     }
 
     var names = new Array()
@@ -499,7 +503,7 @@ function update_graph(data, new_state, prev_state) {
         var wars = getWars(prev_state.selection);
         wars.forEach(function(war, array, index) {
             $("text.clickable_text#i"+String(war.id)).attr("class", "clickable_text");
-            $("line.timeline#i"+String(prev_state.selection.id)).attr("class", ".dots line");
+            $("line.timeline#i"+String(war.id)).attr("class", ".dots line");
         });
     }
     // new selection
@@ -511,7 +515,7 @@ function update_graph(data, new_state, prev_state) {
         var wars = getWars(new_state.selection);
         wars.forEach(function(war, array, index) {
             $("text.clickable_text#i"+String(war.id)).attr("class", "clickable_text selected");
-            $("line.timeline#i"+String(new_state.selection.id)).attr("class", "timeline selected");
+            $("line.timeline#i"+String(war.id)).attr("class", "timeline selected");
         });
     }
 }
