@@ -97,9 +97,6 @@ function draw_infocart(data, state) {
             .resize(true)
             .draw();
     }
-    else if(state.selectionType == 'C') {
-        // TODO SELECTION_COUNTRY what if selection is a country?
-    }
     else {
         card = card.append("a").attr("xlink:href", "http://www.wikipedia.org/");
 
@@ -114,7 +111,7 @@ function draw_infocart(data, state) {
         var text = card.append("text")
             .attr('text-anchor','middle')
             .attr('fill','red')
-            .text("Hover over a war in the graph. You can zoom in and slide.");
+            .text("Click on a war in the graph. You can zoom in and slide.");
 
         d3plus.textwrap()
             .container(text)
