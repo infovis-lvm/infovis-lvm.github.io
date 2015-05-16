@@ -88,7 +88,8 @@ function draw_infocart(data, state) {
             .attr("width", width-stroke.width);
 
         var text = card.append("text")
-            .text(war.description);
+            .text(war.description)
+            .attr("class", "infocardtext");
 
         d3plus.textwrap()
             .container(text)

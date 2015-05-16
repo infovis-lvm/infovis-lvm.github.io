@@ -28,12 +28,28 @@
     opacity: 0.3;
 }
 
-.x.axis line {
+.y_axis line {
+    fill: none;
     stroke: red;
+    shape-rendering: crispEdges;
 }
 
-.y.axis line {
+.y_axis path {
+    fill: none;
+    stroke: rgba(1,1,1,0.0);
+    shape-rendering: crispEdges;
+}
+
+.x_axis line {
+    fill: none;
     stroke: red;
+    shape-rendering: crispEdges;
+}
+
+.x_axis path {
+    fill: none;
+    stroke: rgba(1,1,1,0.0);
+    shape-rendering: crispEdges;
 }
 
 .clickable_text {
@@ -89,26 +105,6 @@ rect#rectangle {
     fill-opacity: 0.1;
 }
 
-.y_axis line {
-    fill: none;
-    stroke: red;
-    shape-rendering: crispEdges;
-}
-
-.y_axis path {
-    fill: none;
-    stroke: rgba(1,1,1,0.0);
-    shape-rendering: crispEdges;
-}
-
-.x_axis line {
-    fill: none;
-    stroke: red;
-    shape-rendering: crispEdges;
-}
-
-.x_axis path {
-    fill: none;
-    stroke: rgba(1,1,1,0.0);
-    shape-rendering: crispEdges;
+.infocardtext {
+    font-family: sans-serif;
 }
