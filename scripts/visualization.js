@@ -537,7 +537,7 @@ function update_all(data, new_state, prev_state) {
 function change_viewed(viewed) {
     prev_state = jQuery.extend(true, {}, vis_state);
     vis_state.viewed = viewed;
-    update_ranking(vis_state, prev_state);
+    update_ranking(wardata, vis_state, prev_state);
     // graph is updated on its own, outside of this mechanism
 }
 
