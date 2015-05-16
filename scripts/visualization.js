@@ -6,8 +6,7 @@ var wardata,
     map,
 // state of the visualisation, attributes are
 // 'metric', 'startdate', 'enddate', 'selection', 'selectionType', 'highlight' and 'highlightType'
-    vis_state,
-    vis_previous_state;
+    vis_state;
 
 // ------------- //
 // DRAW ELEMENTS //
@@ -54,7 +53,7 @@ function draw_ranking(data, state) {
 function draw_infocart(data, state) {
     var stroke = {width: 1};
     
-    // TODO:
+    // TODO SOFTWARE_ONTWERP:
     // if highlight is null:
     //      if selection is null: show empty infocard
     //      else: show selection
@@ -72,10 +71,11 @@ function draw_infocart(data, state) {
         .attr("width",width);
 
     if(state.selectionType == 'W'
+       && state.highlight != undefined
        && state.highlight != null
        && data != null) {
         
-        var war = $.grep(wardata, function(e){ return e.id == state.highlight.id; })[0];
+        var war = $.grep(data, function(e){ return e.id == state.highlight.id; })[0];
 
         card = card.append("a").attr("xlink:href", war.source);
 
@@ -86,9 +86,6 @@ function draw_infocart(data, state) {
             .attr("y", stroke.width/2)
             .attr("height", height-stroke.width)
             .attr("width", width-stroke.width);
-            //.style("stroke", stroke.color) // TODO remove
-            //.style("fill", "orange")
-            //.style("stroke-width", stroke.width);
 
         var text = card.append("text")
             .text(war.description);
@@ -101,7 +98,7 @@ function draw_infocart(data, state) {
             .draw();
     }
     else if(state.selectionType == 'C') {
-        // TODO what if selection is a country?
+        // TODO SELECTION_COUNTRY what if selection is a country?
     }
     else {
         card = card.append("a").attr("xlink:href", "http://www.wikipedia.org/");
@@ -113,9 +110,6 @@ function draw_infocart(data, state) {
             .attr("y", stroke.width/2)
             .attr("height", $("#infocard").height()-stroke.width)
             .attr("width", $("#infocard").width()-stroke.width);
-            //.style("stroke", stroke.color) // TODO remove
-            //.style("fill", "orange")
-            //.style("stroke-width", stroke.width);
 
         var text = card.append("text")
             .text("Select a war");
@@ -138,29 +132,24 @@ function draw_map(data, state) {
         container : $("#worldmap"),
         onRegionOver : map_country_hover,
         onRegionClick : map_country_click,
-        backgroundColor : 'white', // TODO link css color
+        backgroundColor : 'white', // TODO STYLE link css color
         regionStyle : {
             initial: {
-                fill: 'grey', // TODO link css color
+                fill: 'grey', // TODO STYLE link css color
                 "fill-opacity": 1,
                 stroke: 'none',
                 "stroke-width": 0,
                 "stroke-opacity": 1
             },
             hover: {
-                "fill-opacity": 0.8,
+                fill: 'blue', // TODO STYLE link css color
                 cursor: 'pointer'
             },
             selected: {
-                fill: 'red' // TODO link css color
-            }/*,
-            selectedHover: {
-            }*/
+                fill: 'red' // TODO STYLE link css color
+            }
         }
     });
-    
-    // TODO color selection and highlight (if not null)
-    // TODO link triggers to change-methods
 }
 
 function draw_graph(data, state) {
@@ -188,13 +177,6 @@ function draw_graph(data, state) {
         .attr("width",width-margin/2)
         .attr("transform", "translate(" + margin/2 + "," + margin/2 + ")");
 
-    /* TODO remove
-    var rect = chart.append("rect")
-        .attr("width", width-margin/2)
-        .attr("height", height-margin/2)
-        .attr("fill", "pink");
-    */
-
     x = d3.time.scale()
         .domain( [state.startdate, state.enddate] )
         .range(  [0, 13 ]);
@@ -221,9 +203,6 @@ function draw_graph(data, state) {
         .attr('dy','-6')
         .attr('text-anchor','middle');
 
-    //d3.select(selector + ' svg g')
-    //    .attr('transform', 'translate(50, 50)');  // TODO remove
-
     // BARS
     dots = chart.append('g')
         .attr('class', 'dots');
@@ -244,7 +223,7 @@ function draw_graph(data, state) {
     var xlabel = chart.append('g'),
         ylabel = chart.append('g');
 
-    /* TODO remove
+    /* TODO AXIS_LABELS
     ylabel.append("text")
         .attr('class' ,'label')
         .attr("text-anchor", "middle")  // this makes it easy to centre the text as the transform is applied to the anchor
@@ -287,9 +266,9 @@ function draw_graph(data, state) {
 
     zoom(d3.select("#graph"));
 
-    //test.call(zoom); // TODO remove
+    //test.call(zoom); // TODO INIT_ANIMATIE
 
-    //alldata.call(zoom); // TODO remove
+    //alldata.call(zoom); // TODO INIT_ANIMATIE
 
     test.transition().duration(4000).call(zoom.translate([100,0]).event);
 
@@ -319,7 +298,7 @@ function draw_graph(data, state) {
         var viewed = new Array();
 
         names.selectAll("text")
-            .text(function(d) {return d.name;}) //TODO add name d.name;})
+            .text(function(d) {return d.name;})
             .attr( 'id', function(d) {return "i"+d.id;})
             .attr("class", function(d) {
             if(d == vis_state.selection) {
@@ -330,13 +309,10 @@ function draw_graph(data, state) {
                 return "clickable_text";
             }
             })
-            //.attr('onmouseover',function(d) {return "graph_war_hover("+d.id+")";})
-            //.attr('onclick',function(d,i) {return "click("+i+");render();";}) // TODO remove
             .attr('x', function(d,i) {
                 var val = x( new Date(d.ending.getTime() - (d.ending.getTime()-1 - d.beginning.getTime()-1)/2) );
-                if (val >= 0 && val <= width-50) { // TODO check the correct values start x - width - end x
+                if (val >= 0 && val <= width-50) {
                     viewed.push(d);
-                    //TODO draw upper graph with these names.
                 }
                 return  x( new Date(d.ending.getTime() - (d.ending.getTime()-1 - d.beginning.getTime()-1)/2) );
             })
@@ -345,8 +321,6 @@ function draw_graph(data, state) {
             })
             .attr('font-size', function(d,i) {
                 return "12 px";
-                //return x(d.ending  - 1 - d.beginning  +1)/130 + "px" ; // TODO remove
-                //return 10*(x(d.ending - d.beginning)/x( d.ending  - 1 - d.beginning  +1)) + "px" ; // TODO remove
             });
 
         change_viewed(viewed);
@@ -370,15 +344,15 @@ function draw_all(data, state) {
 
 function init_visualization(data) {
     wardata = data;
-
     
     // create initial state
     vis_state = new Object();
-    vis_state.metric = null // TODO select initial metric
     vis_state.startdate = d3.time.day.round(d3.time.year.offset(new Date('1820'), -1));
     vis_state.enddate = d3.time.day.round(d3.time.year.offset(new Date('2010'), 1));
-    vis_state.selection = []; // TODO select initial selection
-    vis_state.highlight = [];
+    vis_state.selectionType = 'W';
+    vis_state.selection = null;
+    vis_state.highlightType = 'W';
+    vis_state.highlight = null;
     vis_state.viewed = [];
     
     // draw elements
@@ -400,9 +374,13 @@ function update_ranking(data, new_state, prev_state) {
 
     var visible = new_state.viewed.sort(function(a, b) { return b.nb_victims - a.nb_victims; }).slice(0,10);
 
-    if(new_state.selection.length > 0 && visible.indexOf(new_state.selection[0]) == -1 && d3.select(".barinstance#i"+new_state.selection.id).empty)     {
+    if(new_state.selectionType == 'W'
+       && new_state.selection != null
+       && new_state.selection != undefined
+       && visible.indexOf(new_state.selection) == -1
+       && d3.select(".barinstance#i" + new_state.selection.id).empty) {
         visible.push(new_state.selection);
-        animation = true;
+        animation = new_state.selection != prev_state.selection;
     }
 
     var names = new Array()
@@ -435,7 +413,10 @@ function update_ranking(data, new_state, prev_state) {
                 return "bar selected"
             }
             else if(new_state.selectionType == 'C') {
-                return "bar"; // TODO what if country selected?
+                // if the selected country was involved, make the bar selected
+                if(getWars(new_state.selection).indexOf(d) != -1) {
+                    return "bar selected";
+                }
             }
             else {
                 return "bar";
@@ -467,17 +448,9 @@ function update_ranking(data, new_state, prev_state) {
         var y0 = y.domain(sorted_names)
             .copy();
 
-        /* TODO remove
-        svg.selectAll(".barinstance")
-            .sort(function(a, b) { return y0(a.name) - y0(b.name); });
-        */
-
         var transition = svg.transition().duration(750),
             delay = function(d, i) { return i * 100; };
-
-        //var selector = d3.select();  // TODO remove
-
-        //transition.selectAll(".barinstance#i"+new_state.selection.id)  // TODO remove
+        
         transition.select("rect.bar.selected")
             .delay(delay)
             .attr("width", function(d) { return x(d.nb_victims); });
@@ -505,32 +478,29 @@ function update_map(data, new_state, prev_state) {
 }
 
 function update_graph(data, new_state, prev_state) {
+    // clean up previous selection
+    if(prev_state.selectionType == 'W'
+       && prev_state.selection != null) {
+        $("text.clickable_text#i"+String(prev_state.selection.id)).attr("class", "clickable_text");
+    } else if(prev_state.selectionType == 'C') {
+        var wars = getWars(prev_state.selection);
+        wars.forEach(function(war, array, index) {
+            $("text.clickable_text#i"+String(war.id)).attr("class", "clickable_text");
+        });
+    }
+    // new selection
     if(new_state.selectionType == 'W') {
-        // other mechanism
+        $("text.clickable_text#i"+String(new_state.selection.id)).attr("class", "clickable_text selected");
     } else if(new_state.selectionType == 'C') {
-        // TODO what if selection is a country?
+        var wars = getWars(new_state.selection);
+        wars.forEach(function(war, array, index) {
+            $("text.clickable_text#i"+String(war.id)).attr("class", "clickable_text selected");
+        });
     }
 }
 
 function update_all(data, new_state, prev_state) {
-    //selection
-    var i = new_state.selection.id,
-        iprev = prev_state.selection.id;
-    if(i == iprev) {
-        //TODO
-    }
-    
-    // TODO moet dit niet in de methode update_graph ?
-    $("text.clickable_text#i"+String(i)).attr("class", "clickable_text selected");
-    $("text.clickable_text#i"+String(iprev)).attr("class", "clickable_text");
-
-    //$("rect.bar").css( "fill", "red" );
-
     //selection on ranking
-    // TODO waarom volgende twee lijnen ook niet in update_ranking ?
-    $("#i"+String(i)+" > rect").attr("class", "bar selected");
-    $("#i"+String(iprev)+" > rect").attr("class", "bar");
-    // TODO all above this TODO has to move somewhere else I think...
     update_ranking(wardata, new_state, prev_state);
     update_infocard(wardata, new_state, prev_state);
     update_map(wardata, new_state, prev_state);
@@ -542,9 +512,9 @@ function update_all(data, new_state, prev_state) {
 // ------- //
 
 function change_viewed(viewed) {
-    vis_previous_state = jQuery.extend(true, {}, vis_state);
+    prev_state = jQuery.extend(true, {}, vis_state);
     vis_state.viewed = viewed;
-    update_ranking(vis_state, vis_previous_state);
+    update_ranking(vis_state, prev_state);
     // graph is updated on its own, outside of this mechanism
 }
 
@@ -571,19 +541,22 @@ function change_selection(id) {
 
 // id should start with a 'W' f a war should be highlighted, and with a 'C' if a country should be highlighted
 function change_highlight(id) {
-    // if the selection is a war...
+    // if the highlight is a war...
     if(id.charAt(0) == 'W') {
         id = id.substr(1, id.length - 1);
-        var highlight = $.grep(wardata, function(e){ return e.id == id; })[0]; //TODO -2 is dirty fix
+        var highlight = $.grep(wardata, function(e){ return e.id == id; })[0];
         var prev_state = jQuery.extend(true, {}, vis_state);
         vis_state.highlight = highlight;
         vis_state.highlightType = 'W';
         update_all(wardata, vis_state, prev_state);
     }
-    // if the selection is a country
+    // if the highlight is a country
     else if (id.charAt(0) == 'C') {
         id = id.substr(1, id.length - 1);
-        // TODO
+        var prev_state = jQuery.extend(true, {}, vis_state);
+        vis_state.highlight = id;
+        vis_state.highlightType = 'C';
+        update_all(wardata, vis_state, prev_state);
     }
 }
 

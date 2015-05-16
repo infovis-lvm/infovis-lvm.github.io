@@ -395,6 +395,5 @@ function getWars(id) {
             wars.push(war);
         }
     });
-    console.log(wars);
     return wars;
 }
