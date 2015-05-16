@@ -319,7 +319,7 @@ function draw_graph(data, state) {
             .attr("class", function(d) {
                 if(vis_state.selectionType == 'W'
                    && d == vis_state.selection) {
-                    viewed.push(d)
+                    viewed.push(d);
                     return "clickable_text selected";
                 }
                 else if(vis_state.selectionType == 'C') {
