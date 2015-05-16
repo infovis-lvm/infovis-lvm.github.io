@@ -70,7 +70,7 @@ function draw_infocart(data, state) {
         .attr("height",width)
         .attr("width",width);
 
-    if(state.selectionType == 'W'
+    if(state.highlightType == 'W'
        && state.highlight != undefined
        && state.highlight != null
        && data != null) {
@@ -96,10 +96,10 @@ function draw_infocart(data, state) {
             .size([7, 20])
             .resize(true)
             .draw();
-    }
+    }/*
     else if(state.selectionType == 'C') {
         // TODO SELECTION_COUNTRY what if selection is a country?
-    }
+    }*/
     else {
         card = card.append("a").attr("xlink:href", "http://www.wikipedia.org/");
 
@@ -142,7 +142,7 @@ function draw_map(data, state) {
                 "stroke-opacity": 1
             },
             hover: {
-                fill: 'blue', // TODO STYLE link css color
+                "fill-opacity": 0.8,
                 cursor: 'pointer'
             },
             selected: {
@@ -463,7 +463,10 @@ function update_infocard(data, new_state, prev_state) {
 
 function update_map(data, new_state, prev_state) {
     map.clearSelectedRegions();
+    if(new_state.selection == null) return;
+    
     var ids = new Array();
+    
     if(new_state.selectionType == 'W') {
         var countries = getCountries(new_state.selection);
         var id;
@@ -489,6 +492,7 @@ function update_graph(data, new_state, prev_state) {
         });
     }
     // new selection
+    if(new_state.selection == null) return;
     if(new_state.selectionType == 'W') {
         $("text.clickable_text#i"+String(new_state.selection.id)).attr("class", "clickable_text selected");
     } else if(new_state.selectionType == 'C') {
