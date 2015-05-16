@@ -135,7 +135,7 @@ function draw_map(data, state) {
         backgroundColor : 'white', // TODO STYLE link css color
         regionStyle : {
             initial: {
-                fill: 'grey', // TODO STYLE link css color
+                fill: "#555555",
                 "fill-opacity": 1,
                 stroke: 'none',
                 "stroke-width": 0,

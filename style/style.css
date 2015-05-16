@@ -1,32 +1,4 @@
-/*
-.chart {
-    background-color: white;
-}
-
-text.label {
-    color : red;
-}
-≈
-
-*/
-
-.clickable_text.selected {
-    fill :red;
-}
-
-.timeline.selected {
-    stroke: red;
-}
-
-.clickable_text {
-    fill :  rgba(80,80,80,0.5);
-    cursor: pointer;
-    font-family: sans-serif;
-}
-
-#graph {
-    cursor: all-scroll;
-}
+/* HEADER */
 
 #header {
     border-bottom: solid;
@@ -34,14 +6,24 @@ text.label {
     border-bottom-color:  rgba(0,0,0,0.1);
 }
 
-#worldmap {
-    background-color: white;
+
+/* GRAPH */
+
+#graph {
+    cursor: all-scroll;
 }
 
+.clickable_text.selected {
+    fill : red;
+}
 
+.timeline.selected {
+    stroke:  red;
+    opacity: 1;
+}
 
 .dots line {
-    stroke : #700800;
+    stroke : #555555;
     opacity: 0.3;
 }
 
@@ -53,87 +35,51 @@ text.label {
     stroke: red;
 }
 
-#ranking text.warnameText  { font-family: sans-serif; font-size: 10px; fill:#FFFFFF }
-#ranking text.victimText  { font-family: sans-serif; font-size: 10px; fill:#FFFFFF }
+.clickable_text {
+    fill :  rgba(80,80,80,0.5);
+    cursor: pointer;
+    font-family: sans-serif;
+}
+
+/* WORLDMAP */
+
+#worldmap {
+    background-color: white;
+}
+
+/* RANKING */
+
+#ranking text.warnameText  {
+    font-family: sans-serif;
+    font-size: 10px;
+    fill: white
+}
+
+#ranking text.victimText  {
+    font-family: sans-serif;
+    font-size: 10px;
+    fill: white
+}
+
 #ranking .dots rect {
     opacity: 0.3;
     cursor: pointer;
 }
-/*
-.ui-menu .ui-menu-item a{
-    background:white;
-    height:10px;
-    font-size:8px;
-}
-*/
 
 .backtext {
-    font-family: sans-serif;  fill:rgba(100, 100, 100,0.3);
+    font-family: sans-serif;
+    fill:rgba(100, 100, 100,0.3);
 }
 
-ul.ui-autocomplete {
-    list-style: none;
-    list-style-type: none;
-    padding: 0px;
-    margin: 0px;
-}
+/* INFOCARD */
 
 .card {
     border-left-style: solid;
     border-left-width: 1px;
     border-left-color: rgba(80, 80, 80,0.6);
-    /*fill: #FFD647;
-    fill-opacity: 0.1;
-    x: 0.5px;
-    y: 0.5px;
-    */
 }
 
 rect#rectangle {
     fill: #FFFFFF;
     fill-opacity: 0.1;
 }
-
-
-
-
-
-/*
-.names {
-    /*
-    opacity: 0.30;
-    font-family: verdana;
-
-}
-*/
-/*
-.names text {
-    /
-    color : gray;
-
-}
-*/
-
-/*
-body {
-    font-family: verdana, sans-serif;
-}
-
-.title {
-    text-anchor : middle;
-    color : red;
-}
-
-.chart rect {
-    stroke: white;
-    fill: steelblue;
-}
-
-
-
-
-
-.axis text {
-    font-size: 12px;
-}
-*/
