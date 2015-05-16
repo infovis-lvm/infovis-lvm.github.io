@@ -87,6 +87,10 @@
     fill:red
 }
 
+.bar{
+    fill: #555555
+}
+
 .backtext {
     font-family: sans-serif;
     fill:rgba(100, 100, 100,0.3);

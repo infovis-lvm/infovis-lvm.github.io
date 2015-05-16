@@ -97,6 +97,9 @@ function draw_infocart(data, state) {
             .resize(true)
             .draw();
     }
+    else if (state.selectionType == 'C') {
+        // leave infocard empty
+    }
     else {
         card = card.append("a").attr("xlink:href", "http://www.wikipedia.org/");
 
@@ -286,8 +289,14 @@ function draw_graph(data, state) {
         dots.selectAll("line")
             .attr( 'id', function(d) {return "i"+d.id;})
             .attr( 'class', function(d) {
-                if(d == vis_state.selection) {
-                    return "timeline selected"
+                if(vis_state.selectionType == 'W'
+                   && d == vis_state.selection) {
+                    return "timeline selected";
+                }
+                else if(vis_state.selectionType == 'C') {
+                    if(getWars(vis_state.selection).indexOf(d) != -1) {
+                        return "timeline selected";
+                    }
                 }
                 else {
                     return "timeline";
@@ -308,9 +317,16 @@ function draw_graph(data, state) {
             .text(function(d) {return d.name;})
             .attr( 'id', function(d) {return "i"+d.id;})
             .attr("class", function(d) {
-                if(d == vis_state.selection) {
+                if(vis_state.selectionType == 'W'
+                   && d == vis_state.selection) {
                     viewed.push(d)
-                    return "clickable_text selected"
+                    return "clickable_text selected";
+                }
+                else if(vis_state.selectionType == 'C') {
+                    if(getWars(vis_state.selection).indexOf(d) != -1) {
+                        viewed.push(d);
+                        return "clickable_text selected";
+                    }
                 }
                 else {
                     return "clickable_text";
