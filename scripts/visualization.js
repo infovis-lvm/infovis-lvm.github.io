@@ -106,7 +106,7 @@ function draw_infocart(data, state) {
         var borderPath = card
             .append("rect")
             .attr("id","rectangle")
-            .attr("x", stroke.width/10)
+            .attr("x", stroke.width/2)
             .attr("y", stroke.width/2)
             .attr("height", $("#infocard").height()-stroke.width)
             .attr("width", $("#infocard").width()-stroke.width);
