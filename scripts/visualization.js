@@ -106,7 +106,7 @@ function draw_infocart(data, state) {
         var borderPath = card
             .append("rect")
             .attr("id","rectangle")
-            .attr("x", stroke.width/2)
+            .attr("x", stroke.width/3)
             .attr("y", stroke.width/2)
             .attr("height", $("#infocard").height()-stroke.width)
             .attr("width", $("#infocard").width()-stroke.width);
@@ -118,7 +118,7 @@ function draw_infocart(data, state) {
         
         d3plus.textwrap()
             .container(text)
-            .padding(40)
+            .padding(20)
             .size([6, 20])
             .resize(true)
             .draw();
