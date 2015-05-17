@@ -117,8 +117,8 @@ function draw_infocart(data, state) {
             .text("Click on a war or country to highlight it. Zoom in/out on the timeline by scrolling.");
         
         card.append("text")
-            .attr('text-anchor','middle')
-            .attr('fill','red')
+            .attr('x', 10)
+            .attr('dy', '20');
             .text("Click and drag the timeline to move it.");
         
         
