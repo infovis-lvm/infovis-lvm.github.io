@@ -231,11 +231,11 @@ function draw_graph(data, state) {
         //.text("average daily chance of dying [consecutive head-throws]");
 
     ylabel.append('tspan')
-        .text("average daily chance of dying")
+        .text("Average Daily Chance of Dying")
         .attr('x', 0)
         .attr('dy', '0');
     ylabel.append('tspan')
-        .text("[consecutive head-throws]")
+        .text("[Consecutive Heads Thrown]")
         .attr('x', 10)
         .attr('dy', '20');
 
