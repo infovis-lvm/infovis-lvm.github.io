@@ -286,6 +286,11 @@ function draw_graph(data, state) {
 
     function render() {
         cacheScale = zoom.scale();
+        
+        xAxis.scale(x);
+        chart.select(".x_axis").call(xAxis);
+        chart.select(".y_axis").call(yAxis);
+        
         dots.selectAll("line")
             .attr( 'id', function(d) {return "i"+d.id;})
             .attr( 'class', function(d) {
@@ -293,10 +298,9 @@ function draw_graph(data, state) {
                    && d == vis_state.selection) {
                     return "timeline selected";
                 }
-                else if(vis_state.selectionType == 'C') {
-                    if(getWars(vis_state.selection).indexOf(d) != -1) {
+                else if(vis_state.selectionType == 'C'
+                        && getWars(vis_state.selection).indexOf(d) != -1) {
                         return "timeline selected";
-                    }
                 }
                 else {
                     return "timeline";
@@ -307,9 +311,6 @@ function draw_graph(data, state) {
             .attr( 'y1', function( d ) { return (height - margin) - y( d.sterfkans_per_dag) + 1 } )
             .attr( 'y2', function( d ) { return (height - margin) - y( d.sterfkans_per_dag) + 1 } )
         ;
-        xAxis.scale(x);
-        chart.select(".x_axis").call(xAxis);
-        chart.select(".y_axis").call(yAxis);
         
         var viewed = new Array();
 
@@ -322,11 +323,9 @@ function draw_graph(data, state) {
                     viewed.push(d);
                     return "clickable_text selected";
                 }
-                else if(vis_state.selectionType == 'C') {
-                    if(getWars(vis_state.selection).indexOf(d) != -1) {
-                        viewed.push(d);
+                else if(vis_state.selectionType == 'C'
+                        && getWars(vis_state.selection).indexOf(d) != -1) {
                         return "clickable_text selected";
-                    }
                 }
                 else {
                     return "clickable_text";
