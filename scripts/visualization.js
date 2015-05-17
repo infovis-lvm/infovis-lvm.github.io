@@ -118,7 +118,7 @@ function draw_infocart(data, state) {
         
         d3plus.textwrap()
             .container(text)
-            .padding(20)
+            .padding(40)
             .size([6, 20])
             .resize(true)
             .draw();
