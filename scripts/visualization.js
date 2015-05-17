@@ -52,12 +52,6 @@ function draw_ranking(data, state) {
 
 function draw_infocart(data, state) {
     var stroke = {width: 1};
-    
-    // TODO SOFTWARE_ONTWERP:
-    // if highlight is null:
-    //      if selection is null: show empty infocard
-    //      else: show selection
-    // else: show highlight
 
     var height= $("#infocard").height(),
         width= $("#infocard").width();
@@ -76,7 +70,9 @@ function draw_infocart(data, state) {
         
         var war = getWar(data, state.selection.id);
 
-        card = card.append("a").attr("xlink:href", war.source);
+        card = card.append("a")
+            .attr("xlink:href", war.source)
+            .attr("xlink:show", "new");
 
         var borderPath = card
             .append("rect")
