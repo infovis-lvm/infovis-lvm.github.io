@@ -1,3 +1,5 @@
+// mapping from http://jvectormap.com/maps/world/world/
+
 function getCountryName(id) {
     if(id =="BD" ) return "Bangladesh" ;
     if(id =="BE" ) return "Belgium" ;

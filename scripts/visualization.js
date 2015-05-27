@@ -122,8 +122,7 @@ function draw_infocart(data, state) {
 }
 
 function draw_map(data, state) {
-    // http://jvectormap.com/documentation/javascript-api/jvm-map/
-    // http://jvectormap.com/maps/world/world/
+    // based on http://jvectormap.com/documentation/javascript-api/jvm-map/
     
     // create map
     map = new jvm.Map({

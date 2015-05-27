@@ -1,15 +1,8 @@
-/**
- * Created by maxdekoninck on 27/04/15.
- */
-
-
 // ID of the Google Spreadsheet
 var spreadsheetID = "1zWCinNSlwG20xruZKnwv2SFrJ-IA_DWWUcJIHwlZOnU";
 
 // Make sure it is public or set to Anyone with link can view
 var url = "https://spreadsheets.google.com/feeds/cells/" + spreadsheetID + "/od6/public/values?alt=json";
-
-// The file with all the date
 
 
 //Get the data and clean it (parse and remove first two lines).
