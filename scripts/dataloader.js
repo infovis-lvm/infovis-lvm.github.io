@@ -29,7 +29,8 @@ $.getJSON(url, function(data) {
 
 });
 
-//parse the json feed in a data frame
+// parse the json feed in a data frame
+// from: http://jsdo.it/converge101/naWx
 function mapEntries(json, realrowlength, skip){
     if (!skip) skip = 0;
     var dataframe = new Array();
